@@ -10,6 +10,9 @@ use App\Models\LocationsModel;
 use App\Models\ClubsModel;
 use \App\Libraries\Oauth;
 use \OAuth2\Request;
+use App\Models\MediaModel;
+use App\Models\MediaCommentModel;
+use App\Models\UserMediaModel;
 
 class Profiles extends BaseController
 {
@@ -320,6 +323,115 @@ class Profiles extends BaseController
 			} else $success_data['profile_blast_record'] = $profile['profile_blast_record'];
 		}
 
-		return $this->response->setStatusCode(202)->setJSON(['success'=>'Profile updated.', 'success_data'=>$success_data]);
+		return $this->response->setStatusCode(202)->setJSON(['success' => 'Profile updated.', 'success_data' => $success_data]);
+	}
+
+	public function get_feeds() {
+		$oauth = new Oauth();
+		$request = new Request();
+		$modelAppUser = new AppUserModel;
+		$modelAppUserRels = new AppUserRelsModel;
+		$modelProfiles = new ProfilesModel;
+		$modelMedia = new MediaModel;
+		$modelMediaComment = new MediaCommentModel;
+		$modelUserMedia = new UserMediaModel;
+
+		$postData = $this->request->getPost();
+		
+		$app_user_id = $modelAppUserRels->where(['profile_id' => $postData['profile_id']])->find()->app_user_id;
+
+		$userMedias = $modelUserMedia->where([ 'app_user_id' => $app_user_id ])->findAll();
+
+		foreach( $userMedias as $key => $userMedia ) {
+			$userMedias[$key]['info'] = $modelMedia->find( $userMedia['media_id'] );
+			$userMedias[$key]['comment'] = $modelMediaComment->where([ 'user_media_id' => $userMedia['id'] ])->findAll();
+		}
+		
+		return $this->response->setStatusCode(202)->setJSON(['mediaList' => $userMedias]);
+	}
+
+	public function add_feed() {
+		$oauth = new Oauth();
+		$request = new Request();
+		$modelAppUser = new AppUserModel;
+		$modelAppUserRels = new AppUserRelsModel;
+		$modelProfiles = new ProfilesModel;
+		$modelMedia = new MediaModel;
+		$modelMediaComment = new MediaCommentModel;
+		$modelUserMedia = new UserMediaModel;
+
+		$postData = $this->request->getPost();
+
+		// Check File
+		if (!empty($_FILES['media']['name'])) {	
+			$media = $this->request->getFile('media');
+			if ($media->isValid() && ! $media->hasMoved()) {
+				$media->move('./uploads/feeds',$media->getClientName());
+			}
+		} else {
+			$media = null;
+		}
+
+		if( $media != null ) {
+			// Add to database
+			$duration = isset($postData['media']['duration']) ? $postData['media']['duration'] : 0;
+
+			$type = $duration > 0 ? 'Video': 'Image';
+			$newMedia_id = $modelMedia->insert([ 'url' => $media->getClientName(), 'type' => $type, 'duration' => $duration ]);
+
+			$app_user_id = $modelAppUserRels->where(['profile_id' => $postData['profile_id']])->first()['app_user_id'];
+			
+
+			$modelUserMedia->insert(['app_user_id' => $app_user_id, 'media_id' => $newMedia_id]);
+
+			$userMedias = $modelUserMedia->where(['app_user_id' => $app_user_id])->findAll();
+
+			foreach( $userMedias as $key => $userMedia ) {
+				$userMedias[$key]['info'] = $modelMedia->find( $userMedia['media_id'] );
+				$userMedias[$key]['comment'] = $modelMediaComment->where([ 'user_media_id' => $userMedia['id'] ])->findAll();
+			}
+
+			return $this->response->setStatusCode(202)->setJSON(['mediaList' => $userMedias]);
+		}
+
+		return $this->response->setStatusCode(400)->setJSON(["error"=>"Something went wrong."]);
+	}
+
+	public function like_feed() {
+		$request = new Request();
+		$modelUserMedia = new UserMediaModel;
+		$postData = $this->request->getPost();
+		
+		$media_id = $postData['id'];
+		$like_cnt = $modelUserMedia->find($media_id)->like_cnt;
+		$like_cnt ++;
+
+		$modelUserMedia->where('id', $media_id)
+						->set(['like_cnt' => $like_cnt])
+						->update();
+		
+		$updatedMedia = $modelUserMedia->find($media_id);
+		return $this->response->setStatusCode(202)->setJSON([ 'updatedMedia' => $updatedMedia ]);
+	}
+
+	public function share_feed() {
+		$request = new Request();
+		$modelUserMedia = new UserMediaModel;
+		$postData = $this->request->getPost();
+		
+		$media_id = $postData['id'];
+		$share_cnt = $modelUserMedia->find($media_id)->share_cnt;
+		$share_cnt ++;
+
+		$modelUserMedia->where('id', $media_id)
+						->set(['share_cnt' => $share_cnt])
+						->update();
+		
+		$updatedMedia = $modelUserMedia->find($media_id);
+		return $this->response->setStatusCode(202)->setJSON([ 'updatedMedia' => $updatedMedia ]);
+	}
+
+	public function comment_feed() {
+
 	}
 }

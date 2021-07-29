@@ -86,14 +86,14 @@
                                     <td>
                                         <ul class="list-inline mb-0">
                                             <li class="list-inline-item">
-                                                <a href="javascript:void(0);" class="px-2 text-primary" data-toggle="tooltip" data-placement="top" title="Edit"><i class="uil uil-pen font-size-18"></i></a>
+                                                <a href="javascript:void(0);" class="px-2 text-primary" data-toggle="tooltip" data-placement="top" title="Edit">Edit<i class="uil uil-pen font-size-18"></i></a>
                                             </li>
                                             <li class="list-inline-item">
-                                                <a href="javascript:void(0);" class="px-2 text-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="uil uil-trash-alt font-size-18"></i></a>
+                                                <a href="javascript:void(0);" class="px-2 text-danger" data-toggle="tooltip" data-placement="top" title="Delete">Delete<i class="uil uil-trash-alt font-size-18"></i></a>
                                             </li>
                                             <li class="list-inline-item dropdown">
                                                 <a class="text-muted dropdown-toggle font-size-18 px-2" href="javascript:void(0);" role="button" data-toggle="dropdown" aria-haspopup="true">
-                                                    <i class="uil uil-ellipsis-v"></i>
+                                                    :<i class="uil uil-ellipsis-v"></i>
                                                 </a>
                                             
                                                 <div class="dropdown-menu dropdown-menu-right">

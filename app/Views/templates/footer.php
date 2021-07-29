@@ -188,6 +188,32 @@
 </div><!-- /.modal -->
 <?php endif; ?>
 
+<?php if( $page === 'profiles' ) : ?>
+<div id="editProfile" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="editProfileLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title mt-0" id="editProfileLabel">Edit profile data</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="<?php echo base_url('/update_profile') ?>" method="post">
+                    <input type="hidden" class="hidden" id="profile_id" name="profile_id">
+
+                    
+                    
+                    <div class="mt-3 text-right">
+                        <button type="submit" class="btn btn-primary w-sm waves-effect waves-light">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<?php endif; ?>
+
 <!-- JAVASCRIPT -->
 <script src="/assets/libs/jquery/jquery.min.js"></script>
 <script src="/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>

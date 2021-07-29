@@ -74,6 +74,9 @@ $routes->get('locations', 'Locations::index',['filter' => 'auth']);
 $routes->get('activities', 'Activities::index',['filter' => 'auth']);
 
 $routes->get('profiles', 'Profiles::index',['filter' => 'auth']);
+$routes->match(['post'],'update_profile', 'Profiles::update_profile', ['filter' => 'auth']);
+$routes->match(['post'],'delete_profile', 'Profiles::delete_profile', ['filter' => 'auth']);
+
 $routes->post('api/profiles/current_activity','Profiles::current_activity');
 $routes->post('api/profiles/favourite_add','Profiles::favourite_add');
 $routes->post('api/profiles/update_miles','Profiles::update_miles');
@@ -81,6 +84,12 @@ $routes->post('api/profiles/profile_club','Profiles::profile_club');
 $routes->post('api/profiles/profile_rideout','Profiles::profile_rideout');
 $routes->post('api/profiles/update', 'Profiles::profile_update');
 $routes->post('api/profiles/verify', 'Profiles::verify');
+
+$routes->post('api/profile/feeds', 'Profiles::get_feeds');
+$routes->post('api/profile/add_feed', 'Profiles::add_feed');
+$routes->post('api/profile/like_feed', 'Profiles::like_feed');
+$routes->post('api/profile/share_feed', 'Profiles::share_feed');
+$routes->post('api/profile/comment_feed', 'Profiles::comment_feed');
 
 // Clubs
 $routes->resource('/api/clubs', ['placeholder' => '(:num)','controller' =>'Clubs_api']);
