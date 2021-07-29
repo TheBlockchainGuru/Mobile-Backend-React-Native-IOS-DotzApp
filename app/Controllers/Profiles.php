@@ -337,8 +337,8 @@ class Profiles extends BaseController
 		$modelUserMedia = new UserMediaModel;
 
 		$postData = $this->request->getPost();
-		
-		$app_user_id = $modelAppUserRels->where(['profile_id' => $postData['profile_id']])->find()->app_user_id;
+
+		$app_user_id = $modelAppUserRels->where(['profile_id' => $postData['profile_id']])->first()['app_user_id'];
 
 		$userMedias = $modelUserMedia->where([ 'app_user_id' => $app_user_id ])->findAll();
 
@@ -380,11 +380,10 @@ class Profiles extends BaseController
 			$newMedia_id = $modelMedia->insert([ 'url' => $media->getClientName(), 'type' => $type, 'duration' => $duration ]);
 
 			$app_user_id = $modelAppUserRels->where(['profile_id' => $postData['profile_id']])->first()['app_user_id'];
-			
 
 			$modelUserMedia->insert(['app_user_id' => $app_user_id, 'media_id' => $newMedia_id]);
 
-			$userMedias = $modelUserMedia->where(['app_user_id' => $app_user_id])->findAll();
+			$userMedias = $modelUserMedia->where([ 'app_user_id' => $app_user_id ])->findAll();
 
 			foreach( $userMedias as $key => $userMedia ) {
 				$userMedias[$key]['info'] = $modelMedia->find( $userMedia['media_id'] );
