@@ -202,8 +202,6 @@
                 <form action="<?php echo base_url('/update_profile') ?>" method="post">
                     <input type="hidden" class="hidden" id="profile_id" name="profile_id">
 
-                    
-                    
                     <div class="mt-3 text-right">
                         <button type="submit" class="btn btn-primary w-sm waves-effect waves-light">Update</button>
                     </div>

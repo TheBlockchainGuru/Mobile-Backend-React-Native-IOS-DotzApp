@@ -85,13 +85,17 @@
                                     </td>
                                     <td>
                                         <ul class="list-inline mb-0">
-                                            <li class="list-inline-item">
+                                            <!-- <li class="list-inline-item">
                                                 <a href="javascript:void(0);" class="px-2 text-primary" data-toggle="tooltip" data-placement="top" title="Edit">Edit<i class="uil uil-pen font-size-18"></i></a>
-                                            </li>
+                                            </li> -->
+
                                             <li class="list-inline-item">
-                                                <a href="javascript:void(0);" class="px-2 text-danger" data-toggle="tooltip" data-placement="top" title="Delete">Delete<i class="uil uil-trash-alt font-size-18"></i></a>
+                                                <form action="delete_profile" method="post" enctype="multipart/form-data" name="delete_profile_<?=$profile['app_user_id']?>" class="px-2 mb-0 text-danger" data-toggle="tooltip" data-placement="top" title="Delete">
+                                                    <input type="hidden" value="<?=$profile['app_user_id']?>" name="app_user_id">
+                                                    <button type="submit" class="text-danger p-0" style="background:none;border: none;height: 24px;"><i class="uil uil-trash-alt font-size-18"></i>Delete</button>
+                                                </form>
                                             </li>
-                                            <li class="list-inline-item dropdown">
+                                            <!-- <li class="list-inline-item dropdown">
                                                 <a class="text-muted dropdown-toggle font-size-18 px-2" href="javascript:void(0);" role="button" data-toggle="dropdown" aria-haspopup="true">
                                                     :<i class="uil uil-ellipsis-v"></i>
                                                 </a>
@@ -101,7 +105,7 @@
                                                     <a class="dropdown-item" href="#">Another action</a>
                                                     <a class="dropdown-item" href="#">Something else here</a>
                                                 </div>
-                                            </li>
+                                            </li> -->
                                         </ul>
                                     </td>
                                 </tr>

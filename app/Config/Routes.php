@@ -90,6 +90,7 @@ $routes->post('api/profile/add_feed', 'Profiles::add_feed');
 $routes->post('api/profile/like_feed', 'Profiles::like_feed');
 $routes->post('api/profile/share_feed', 'Profiles::share_feed');
 $routes->post('api/profile/comment_feed', 'Profiles::comment_feed');
+$routes->post('api/profile/add_comment', 'Profiles::add_comment_feed');
 
 // Clubs
 $routes->resource('/api/clubs', ['placeholder' => '(:num)','controller' =>'Clubs_api']);

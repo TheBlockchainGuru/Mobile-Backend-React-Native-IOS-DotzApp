@@ -402,7 +402,7 @@ class Profiles extends BaseController
 		$postData = $this->request->getPost();
 		
 		$media_id = $postData['id'];
-		$like_cnt = $modelUserMedia->find($media_id)->like_cnt;
+		$like_cnt = $modelUserMedia->find($media_id)['like_cnt'];
 		$like_cnt ++;
 
 		$modelUserMedia->where('id', $media_id)
@@ -416,21 +416,102 @@ class Profiles extends BaseController
 	public function share_feed() {
 		$request = new Request();
 		$modelUserMedia = new UserMediaModel;
+		$modelAppUserRels = new AppUserRelsModel;
+
 		$postData = $this->request->getPost();
-		
-		$media_id = $postData['id'];
-		$share_cnt = $modelUserMedia->find($media_id)->share_cnt;
+		$user_media_id = $postData['id'];
+		$profile_id = $postData['profile_id'];
+		$app_user_id = $modelAppUserRels->where(['profile_id' => $profile_id])->first()['app_user_id'];
+
+		$user_media = $modelUserMedia->find( $user_media_id );
+
+		$temp = $modelUserMedia->where(['app_user_id' => $app_user_id, 'media_id' => $user_media['media_id']])->first();
+
+		if( !empty($temp) )
+			return $this->response->setStatusCode(202)->setJSON(['message' => 'You have already shared this feed.']);
+
+		$modelUserMedia->insert(['app_user_id' => $app_user_id, 'media_id' => $user_media['media_id']]);
+
+		$share_cnt = $modelUserMedia->find($user_media_id)['share_cnt'];
 		$share_cnt ++;
 
-		$modelUserMedia->where('id', $media_id)
+		$modelUserMedia->where('id', $user_media_id)
 						->set(['share_cnt' => $share_cnt])
 						->update();
 		
-		$updatedMedia = $modelUserMedia->find($media_id);
+		$updatedMedia = $modelUserMedia->find($user_media_id);
 		return $this->response->setStatusCode(202)->setJSON([ 'updatedMedia' => $updatedMedia ]);
 	}
 
 	public function comment_feed() {
+		$request = new Request();
+		$modelMediaComment = new MediaCommentModel;
+		$modelAppUser = new AppUserModel;
+		$modelAppUserRels = new AppUserRelsModel;;
+		$modelProfiles = new ProfilesModel;
 
+		$postData = $this->request->getPost();
+		$user_media_id = $postData['id'];
+
+		$commentList = $modelMediaComment->where(['user_media_id' => $user_media_id])->findAll();
+
+		foreach( $commentList as $key => $comment ) {
+			$app_user_id = $comment['app_user_id'];
+			$profile_id = $modelAppUserRels->where(['app_user_id' => $app_user_id])->first()['profile_id'];
+			$posterName = $modelAppUser->find($app_user_id)['app_user_name'];
+			$posterAvatar = $modelProfiles->find($profile_id)['profile_img_ava'];
+
+			$commentList[$key]['posterName'] = $posterName;
+			$commentList[$key]['posterAvatar'] = $posterAvatar;
+		}
+
+		return $this->response->setStatusCode(202)->setJSON(['commentList' => $commentList]);
+	}
+
+	public function add_comment_feed() {
+		$request = new Request();
+		$modelMediaComment = new MediaCommentModel;
+		$modelAppUserRels = new AppUserRelsModel;
+
+		$postData = $this->request->getPost();
+		$user_media_id = $postData['id'];
+		$profile_id = $postData['profile_id'];
+		$comment = $postData['comment'];
+		$app_user_id = $modelAppUserRels->where(['profile_id' => $profile_id])->first()['app_user_id'];
+
+		$temp = $modelMediaComment->where(['app_user_id' => $app_user_id, 'user_media_id' => $user_media_id])->first();
+
+		if( !empty($temp) )
+			return $this->response->setStatusCode(202)->setJSON(['message' => 'Has already commented']);
+		
+		$modelMediaComment->insert(['app_user_id' => $app_user_id, 'user_media_id' => $user_media_id, 'comment' => $comment]);
+
+		$commentList = $modelMediaComment->where(['user_media_id' => $user_media_id])->findAll();
+		return $this->response->setStatusCode(202)->setJSON(['success' => true, 'commentList' => $commentList]);
+	}
+
+	public function delete_profile() {
+		$request = new Request();
+		$modelProfiles = new ProfilesModel;
+		$modelAppUser = new AppUserModel;
+		$modelAppUserRels = new AppUserRelsModel;
+
+		$postData = $this->request->getPost();
+
+		$app_user_id = $postData['app_user_id'];
+		$profile_id = $modelAppUserRels->where(['app_user_id' => $app_user_id])->first()['profile_id'];
+		$app_users_rel_id = $modelAppUserRels->where(['app_user_id' => $app_user_id])->first()['app_users_rel_id'];
+
+		if( isset($app_users_rel_id) )
+			$modelAppUserRels->delete($app_users_rel_id);
+
+		if( isset($app_user_id) )
+			$modelAppUser->delete($app_user_id);
+
+		if( isset($profile_id) )
+			$modelProfiles->delete($profile_id);
+
+
+		return redirect()->to('profiles');
 	}
 }
