@@ -93,9 +93,18 @@ $routes->post('api/profile/comment_feed', 'Profiles::comment_feed');
 $routes->post('api/profile/add_comment', 'Profiles::add_comment_feed');
 
 // Clubs
-$routes->resource('/api/clubs', ['placeholder' => '(:num)','controller' =>'Clubs_api']);
-$routes->post('api/clubs/addClub','Clubs_api::addClub');
-$routes->post('api/clubs/updateClub','Clubs_api::updateClub');
+$routes->post('api/profile/get_clubs', 'Clubs::get_clubs');
+$routes->post('api/profile/add_club', 'Clubs::add_club');
+$routes->post('api/profile/get_club_detail', 'Clubs::get_club_detail');
+$routes->post('api/profile/club_members', 'Clubs::get_club_members');
+$routes->post('api/profile/invite_club_member', 'Clubs::invite_club_member');
+$routes->post('api/profile/accept_invitation', 'Clubs::accept_invitation');
+$routes->post('api/profile/reject_invitation', 'Clubs::reject_invitation');
+$routes->post('api/profile/club_invitation', 'Clubs:get_club_invitation');
+$routes->post('api/profile/get_invite_users', 'Clubs::get_invite_users');
+$routes->post('api/profile/invite_user', 'Clubs::invite_user');
+$routes->post('api/profile/get_notification', 'Clubs::get_notification');
+$routes->post('api/profile/invitation_accept_action', 'Clubs::invitation_action');
 
 $routes->get('/chat', 'Chat::index');
 $routes->get('/chat/getChatHistory', 'Chat::getChatHistory'); //

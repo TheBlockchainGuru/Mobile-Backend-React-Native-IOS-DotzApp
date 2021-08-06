@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col-xl-8">
+    <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
                 <div class="float-right">
@@ -75,39 +75,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-xl-4">
-        <div class="card">
-            <div class="card-body">
-
-                <h4 class="card-title"><?=lang('Clubs_lang_en.form_panel')?></h4>
-
-                <form action="/clubs/addClub" method="post" enctype="multipart/form-data" name="addClub" id="addClub">
-                    <div class="form-group row">
-                        <label for="example-text-input" class="col-xl-12 col-md-2 col-form-label"><?=lang('Clubs_lang_en.form_label_title')?></label>
-                        <div class="col-xl-12 col-md-10">
-                            <input type="text" class="form-control" name="club_name" id="club_name" required>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="example-text-input" class="col-xl-12 col-md-2 col-form-label"><?=lang('Clubs_lang_en.form_label_description')?></label>
-                        <div class="col-xl-12 col-md-10">
-                            <textarea type="text" class="form-control" name="club_description" id="club_description" rows="6"></textarea>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="example-text-input" class="col-xl-12 col-md-2 col-form-label"><?=lang('Clubs_lang_en.form_label_image')?></label>
-                        <div class="col-xl-12 col-md-10">
-                            <input type="file" class="form-control-file" name="club_img" id="club_img" required>
-                        </div>
-                    </div>
-
-                    <div class="text-center mt-4">
-                        <button type="submit" class="btn btn-primary waves-effect waves-light"><?=lang('Clubs_lang_en.form_button_submit')?></button>
-                    </div>
-                </form>
             </div>
         </div>
     </div>

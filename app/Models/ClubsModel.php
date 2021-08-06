@@ -9,5 +9,5 @@ class ClubsModel extends Model
 
 	protected $useSoftDeletes = true;
 
-	protected $allowedFields = ['club_id', 'club_name', 'club_description', 'club_img'];
+	protected $allowedFields = ['club_id', 'club_name', 'club_description', 'club_img', 'owner_user_id'];
 }

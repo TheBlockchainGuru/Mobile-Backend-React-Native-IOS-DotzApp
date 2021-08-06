@@ -2,6 +2,15 @@
 
 use App\Models\UserModel;
 use App\Models\ClubsModel;
+use App\Models\ClubUsersModel;
+use App\Models\AppUserModel;
+use App\Models\AppUserRelsModel;
+use App\Models\ClubMessagesModel;
+use App\Models\ProfilesModel;
+use App\Models\Profile_relsModel;
+use App\Models\ClubInvitationsModel;
+use \App\Libraries\Oauth;
+use \OAuth2\Request;
 
 class Clubs extends BaseController
 {
@@ -19,88 +28,234 @@ class Clubs extends BaseController
 		echo view('pages/clubs');
 		echo view('templates/footer');
 	}
-	
-	public function addClub()
-	{
-		if (empty($_FILES['club_img']['name'])) return 'No file uploaded';
-		
-        $img = $this->request->getFile('club_img');
-        if ($img->isValid() && ! $img->hasMoved()) {
-            $img->move('./uploads/clubs',$img->getClientName());
-        }
+
+	public function get_clubs() {
+		$request = new Request();
+		$modelAppUser = new AppUserModel;
+		$modelAppUserRels = new AppUserRelsModel;
 		$modelClubs = new ClubsModel;
-		$club_name = $this->request->getVar('club_name');
+		$modelClubUsers = new ClubUsersModel;
 
-		$data = array(
-			'club_name' => $club_name,
-			'club_description' => $this->request->getVar('club_description'),
-			'club_img' => $img->getClientName(),
-		);
+		$postData = $this->request->getPost();
 
-		if ($modelClubs->save($data)) {
-			$session = session();
-			$session->setFlashdata('msg', "\"{$club_name}\" added successfuly!");
-			return redirect()->to(base_url('/clubs'));
-		} else {
-			$session = session();
-			$session->setFlashdata('msg', "Error adding \"{$club_name}\"");
+		$app_user_id = $modelAppUserRels->where(['profile_id' => $postData['profile_id']])->first()['app_user_id'];
+		
+		$my_clubs = $modelClubUsers->where(['app_user_id' => $app_user_id])->findAll();
+
+		foreach( $my_clubs as $index => $club ) {
+			$club_info = $modelClubs->where(['club_id' => $club['club_id']])->first();
+			$my_clubs[$index]['club_name'] = $club_info['club_name'];
+			$my_clubs[$index]['club_description'] = $club_info['club_description'];
+			$my_clubs[$index]['club_img'] = $club_info['club_img'];
+			$my_clubs[$index]['owner_user_id'] = $club_info['owner_user_id'];
 		}
+
+		return $this->response->setStatusCode(202)->setJSON(['clubList' => $my_clubs]);
 	}
 
-    public function updateClub()
-    {
-		if ($this->request->getMethod() !== 'post') return;
-		if (!empty($_FILES['club_img']['name'])) {
-			$img = $this->request->getFile('club_img');
-			if ($img->isValid() && ! $img->hasMoved()) {
-				$img->move('./uploads/clubs',$img->getClientName());
+	public function add_club() {
+		$oauth = new Oauth();
+		$request = new Request();
+		$modelAppUser = new AppUserModel;
+		$modelAppUserRels = new AppUserRelsModel;
+		$modelClubs = new ClubsModel;
+		$modelClubUsers = new ClubUsersModel;
+
+		$postData = $this->request->getPost();
+
+		// check validation
+		$app_user_id = $modelAppUserRels->where(['profile_id' => $postData['profile_id']])->first()['app_user_id'];
+
+		$my_clubs = $modelClubs->where(['owner_user_id' => $app_user_id])->findAll();
+
+		if( count($my_clubs) >= 3 ) {
+			return $this->response->setStatusCode(202)->setJSON(['message' => 'You cannot have more than 3 clubs.']);
+		}
+
+		// Check File
+		if (!empty($_FILES['image']['name'])) {	
+			$media = $this->request->getFile('image');
+			if ($media->isValid() && ! $media->hasMoved()) {
+				$media->move('./uploads/clubs',$media->getClientName());
 			}
 		} else {
-			$img = null;
+			$media = null;
 		}
-	
-		$modelClubs = new ClubsModel();
-		$club_name = $this->request->getVar('club_name');
 
-		$id = $this->request->getVar('club_id');
-		$newData = [
-			'club_name' => $this->request->getVar('club_name'),
-			'club_description' => $this->request->getVar('club_description'),
-		];
-		if ($img) $newData['club_img'] = $img->getClientName();
+		if( $media != null ) {
+			$club_name = $postData['name'];
+			$club_description = $postData['description'];
+			$club_img = $media->getClientName();
 
-		if ($modelClubs->update($id, $newData)) {
-			$session = session();
-			$session->setFlashdata('msg', "\"{$club_name}\" updated!");
-			return redirect()->to(base_url('/clubs'));
+			$club_id = $modelClubs->insert(['club_name' => $club_name, 'club_description' => $club_description, 'club_img' => $club_img, 'owner_user_id' => $app_user_id]);
+
+			$modelClubUsers->insert(['app_user_id' => $app_user_id, 'club_id' => $club_id]);
+
+			$my_clubs = $modelClubs->where(['owner_user_id' => $app_user_id])->findAll();
+
+			return $this->response->setStatusCode(202)->setJSON(['success' => true, 'clubList' => $my_clubs]);
+		}
+
+		return $this->response->setStatusCode(400)->setJSON(["error"=>"Something went wrong."]);
+	}
+
+	public function get_club_detail() {
+		$oauth = new Oauth();
+		$request = new Request();
+		$modelAppUser = new AppUserModel;
+		$modelAppUserRels = new AppUserRelsModel;
+		$modelClubs = new ClubsModel;
+		$modelClubUsers = new ClubUsersModel;
+		$modelClubMessages = new ClubMessagesModel;
+		$modelProfiles = new ProfilesModel;
+
+		$postData = $this->request->getPost();
+
+		$club_id = $postData['club_id'];
+
+		$club_users = $modelClubUsers->where(['club_id' => $club_id])->findAll();
+
+		foreach( $club_users as $key => $club_user ) {
+			$user_name = $modelAppUser->where(['app_user_id' => $club_user['app_user_id']])->first()['app_user_name'];
+			$profile_id = $modelAppUserRels->where(['app_user_id' => $club_user['app_user_id']])->first()['profile_id'];
+			$user_ava = $modelProfiles->where(['profile_id' => $profile_id])->first()['profile_img_ava'];
+
+			$club_users[$key]['user_name'] = $user_name;
+			$club_users[$key]['user_ava'] = $user_ava;
+		}
+
+		$club_messages = $modelClubMessages->where(['club_id' => $club_id])->findAll();
+
+		return $this->response->setStatusCode(202)->setJSON(['users' => $club_users, 'messageList' => $club_messages]);
+	}
+
+	public function get_invite_users() {
+		$oauth = new Oauth();
+		$request = new Request();
+		$modelAppUser = new AppUserModel;
+		$modelAppUserRels = new AppUserRelsModel;
+		$modelClubs = new ClubsModel;
+		$modelClubUsers = new ClubUsersModel;
+		$modelClubInvitations = new ClubInvitationsModel;
+		$modelProfiles = new ProfilesModel;
+		$modelProfileRels = new Profile_relsModel;
+
+		$postData = $this->request->getPost();
+		
+		$app_user_id = $postData['user_id'];
+		$club_id = $postData['club_id'];
+		$profile_id = $modelAppUserRels->where(['app_user_id' => $app_user_id])->first()['profile_id'];
+
+		$friends = $modelProfileRels->where(['profile_id' => $profile_id])->findAll();
+		$userList = [];
+		foreach($friends as $key => $friend) {
+			$temp = $modelClubUsers->where(['app_user_id' => $friend['app_user_id'], 'club_id' => $club_id])->find();
+			if( count($temp) > 0 )
+				continue;
+			
+			$temp = $modelClubInvitations->where(['app_user_id' => $friend['app_user_id'], 'club_id' => $club_id])->find();
+			if( count($temp) > 0 )
+				continue;
+
+			$user = [];
+			$user['app_user_id'] = $friend['app_user_id'];
+			$user['profile_id'] = $modelAppUserRels->where(['app_user_id' => $user['app_user_id']])->first()['profile_id'];
+			$user['user_name'] = $modelAppUser->where(['app_user_id' => $user['app_user_id']])->first()['app_user_name'];
+			$user['user_ava'] = $modelProfiles->where(['profile_id' => $user['profile_id']])->first()['profile_img_ava'];
+
+			array_push($userList, $user);
+		}
+
+		return $this->response->setStatusCode(202)->setJSON(['userList' => $userList]);
+	}
+
+	public function invite_user() {
+		$oauth = new Oauth();
+		$request = new Request();
+		$modelAppUser = new AppUserModel;
+		$modelAppUserRels = new AppUserRelsModel;
+		$modelClubs = new ClubsModel;
+		$modelClubUsers = new ClubUsersModel;
+		$modelClubInvitations = new ClubInvitationsModel;
+		$modelProfiles = new ProfilesModel;
+		$modelProfileRels = new Profile_relsModel;
+
+		$postData = $this->request->getPost();
+
+		$app_user_id = $postData['user_id'];
+		$club_id = $postData['club_id'];
+		$invite_user_id = $postData['invite_user_id'];
+		$profile_id = $modelAppUserRels->where(['app_user_id' => $app_user_id])->first()['profile_id'];
+
+		$modelClubInvitations->insert(['club_id' => $club_id, 'app_user_id' => $invite_user_id]);
+
+		$friends = $modelProfileRels->where(['profile_id' => $profile_id])->findAll();
+		$userList = [];
+		foreach($friends as $key => $friend) {
+			$temp = $modelClubUsers->where(['app_user_id' => $friend['app_user_id'], 'club_id' => $club_id])->find();
+			if( count($temp) > 0 )
+				continue;
+			
+			$temp = $modelClubInvitations->where(['app_user_id' => $friend['app_user_id'], 'club_id' => $club_id])->find();
+			if( count($temp) > 0 )
+				continue;
+
+			$user = [];
+			$user['app_user_id'] = $friend['app_user_id'];
+			$user['profile_id'] = $modelAppUserRels->where(['app_user_id' => $user['app_user_id']])->first()['profile_id'];
+			$user['user_name'] = $modelAppUser->where(['app_user_id' => $user['app_user_id']])->first()['app_user_name'];
+			$user['user_ava'] = $modelProfiles->where(['profile_id' => $user['profile_id']])->first()['profile_img_ava'];
+
+			array_push($userList, $user);
+		}
+
+		return $this->response->setStatusCode(202)->setJSON(['userList' => $userList]);
+	}
+
+	public function get_notification() {
+		$oauth = new Oauth();
+		$request = new Request();
+		$modelClubs = new ClubsModel;
+		$modelClubInvitations = new ClubInvitationsModel;
+
+		$postData = $this->request->getPost();
+		$app_user_id = $postData['app_user_id'];
+		$notifications = $modelClubInvitations->where(['app_user_id' => $app_user_id])->findAll();
+		foreach( $notifications as $key => $notification ) {
+			$notifications[$key]['club_name'] = $modelClubs->where(['club_id' => $notification['club_id']])->first()['club_name'];
+		}
+
+		return $this->response->setStatusCode(202)->setJSON(['notifications' => $notifications]);
+	}
+
+	public function invitation_action() {
+		$oauth = new Oauth();
+		$request = new Request();
+		$modelClubs = new ClubsModel;
+		$modelClubInvitations = new ClubInvitationsModel;
+		$modelClubUsers = new ClubUsersModel;
+
+		$postData = $this->request->getPost();
+		$invitation_id = $postData['notification_id'];
+		$accept = $postData['accept'];
+
+		$app_user_id = $modelClubInvitations->where(['id' => $invitation_id])->first()['app_user_id'];
+		$club_id = $modelClubInvitations->where(['id' => $invitation_id])->first()['club_id'];
+
+		if( $accept === "1" ) {
+			$modelClubUsers->insert(['app_user_id' => $app_user_id, 'club_id' => $club_id]);
+			$message = "You've accepted the invitation.";
 		} else {
-			$session = session();
-			$session->setFlashdata('msg', "Error updating \"{$club_name}\"");
+			$message = "You've declined the invitation.";
 		}
-    }
 
-	public function delete_club()
-	{
-		if ($this->request->getMethod() == 'post') {
-			$rules = [
-				'club_id' => 'integer|matches[club_id]',
-			];
-			$club_id = $this->request->getVar('club_id');
-			$club_name = $this->request->getVar('club_name');
+		$modelClubInvitations->where(['id' => $invitation_id])->delete();
 
-			if (! $this->validate($rules)) {
-                $data['validation'] = $this->validator;
-                echo $club_id;
-                echo $this->validator->listErrors();
-			} else {
-                $model = new ClubsModel();
-                
-				$model->delete($club_id);
-				$session = session();
-                $session->setFlashdata('msg', "{$club_name} was deleted");
-                
-				return redirect()->to('/clubs');
-			}
+		$notifications = $modelClubInvitations->where(['app_user_id' => $app_user_id])->findAll();
+		foreach( $notifications as $key => $notification ) {
+			$notifications[$key]['club_name'] = $modelClubs->where(['club_id' => $notification['club_id']])->first()['club_name'];
 		}
+
+		return $this->response->setStatusCode(202)->setJSON(['notifications' => $notifications, 'message' => $message]);
 	}
 }
