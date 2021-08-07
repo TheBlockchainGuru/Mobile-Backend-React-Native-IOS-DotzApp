@@ -24,11 +24,15 @@ class Activities_api extends ResourceController
         // {
             helper("json_checker");
             $request_params = $this->request_oauth->getAllQueryParameters();
+            
             if (isset(($request_params['activities']))) {
                 if ( isJson($request_params['activities']) ) {
                     $request_activities = json_decode($request_params['activities'], true);
                     if ( is_array($request_activities) ) {
+                        
                         $activities = $this->model->findAll();
+                        return $this->response->setJSON($activities);
+                        
                         if ( $activities === $request_activities ) {
                             return $this->response->setJSON("Unchanged");
                         }

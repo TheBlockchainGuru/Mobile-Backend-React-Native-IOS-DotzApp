@@ -91,7 +91,15 @@ class Clubs extends BaseController
 
 			$modelClubUsers->insert(['app_user_id' => $app_user_id, 'club_id' => $club_id]);
 
-			$my_clubs = $modelClubs->where(['owner_user_id' => $app_user_id])->findAll();
+			$my_clubs = $modelClubUsers->where(['app_user_id' => $app_user_id])->findAll();
+
+			foreach( $my_clubs as $index => $club ) {
+				$club_info = $modelClubs->where(['club_id' => $club['club_id']])->first();
+				$my_clubs[$index]['club_name'] = $club_info['club_name'];
+				$my_clubs[$index]['club_description'] = $club_info['club_description'];
+				$my_clubs[$index]['club_img'] = $club_info['club_img'];
+				$my_clubs[$index]['owner_user_id'] = $club_info['owner_user_id'];
+			}
 
 			return $this->response->setStatusCode(202)->setJSON(['success' => true, 'clubList' => $my_clubs]);
 		}
@@ -293,5 +301,34 @@ class Clubs extends BaseController
 		}
 
 		return $this->response->setStatusCode(202)->setJSON(['messageList' => $messageList]);
+	}
+
+	public function remove_friend() {
+		$oauth = new Oauth();
+		$request = new Request();
+	
+		$modelAppUserRels = new AppUserRelsModel;
+		$modelAppUser = new AppUserModel;
+		$modelProfiles = new ProfilesModel;
+		$modelProfileRels = new Profile_relsModel;
+
+		$postData = $this->request->getPost();
+
+
+		$profile_id = $postData['profile_id'];
+		$app_user_id = $postData['app_user_id'];
+
+		$modelProfileRels->where(['profile_id' => $profile_id, 'app_user_id' => $app_user_id])->delete();
+
+		$friends = $modelProfileRels->where(['profile_id' => $profile_id])->findAll();
+
+		foreach($friends as $key => $friend) {
+			$friends[$key] = [ 'app_user_id' => $friend['app_user_id'], 'profile_rel_status' => $friend['profile_rel_status'] ];
+			$friends[$key]['app_user_name'] = $modelAppUser->where(['app_user_id' => $friend['app_user_id']])->first()['app_user_name'];
+			$profile_id = $modelAppUserRels->where(['app_user_id' => $friend['app_user_id']])->first()['profile_id'];
+			$friends[$key]['profile'] = $modelProfiles->where(['profile_id' => $profile_id])->first();
+		}
+
+		return $this->response->setStatusCode(202)->setJSON(['friends' => $friends]);
 	}
 }

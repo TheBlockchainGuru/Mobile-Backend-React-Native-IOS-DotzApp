@@ -16,6 +16,7 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <?php if( isset($profiles) ) : ?>
                             <?php foreach ($profiles as $key => $profile) : ?>
                                 <?php if ( isset($profile['friends']) ) $friends = $profile['friends']; ?>
                                 <?php if ( isset($profile['activities']) ) $activities = $profile['activities']; ?>
@@ -110,6 +111,7 @@
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
