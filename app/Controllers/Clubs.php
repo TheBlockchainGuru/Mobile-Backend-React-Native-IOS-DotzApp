@@ -126,6 +126,12 @@ class Clubs extends BaseController
 
 		$club_messages = $modelClubMessages->where(['club_id' => $club_id])->findAll();
 
+		foreach( $club_messages as $key => $message ) {
+			$profile_id = $modelAppUserRels->where(['app_user_id' => $message['app_user_id']])->first()['profile_id'];
+			$club_messages[$key]['app_user_name'] = $modelAppUser->where(['app_user_id' => $message['app_user_id']])->first()['app_user_name'];
+			$club_messages[$key]['app_user_ava'] = $modelProfiles->where(['profile_id' => $profile_id])->first()['profile_img_ava'];
+		}
+
 		return $this->response->setStatusCode(202)->setJSON(['users' => $club_users, 'messageList' => $club_messages]);
 	}
 
@@ -257,5 +263,35 @@ class Clubs extends BaseController
 		}
 
 		return $this->response->setStatusCode(202)->setJSON(['notifications' => $notifications, 'message' => $message]);
+	}
+
+	public function add_club_message() {
+		$oauth = new Oauth();
+		$request = new Request();
+		
+		$modelAppUserRels = new AppUserRelsModel;
+		$modelClubMessages = new ClubMessagesModel;
+		$modelAppUser = new AppUserModel;
+		$modelProfiles = new ProfilesModel;
+		
+		$postData = $this->request->getPost();
+
+		$profile_id = $postData['profile_id'];
+		$club_id = $postData['club_id'];
+		$content = $postData['content'];
+
+		$app_user_id = $modelAppUserRels->where(['profile_id' => $profile_id])->first()['app_user_id'];
+
+		$modelClubMessages->insert(['app_user_id' => $app_user_id, 'club_id' => $club_id, 'content' => $content]);
+
+		$messageList = $modelClubMessages->where(['club_id' => $club_id])->findAll();
+
+		foreach( $messageList as $key => $message ) {
+			$profile_id = $modelAppUserRels->where(['app_user_id' => $message['app_user_id']])->first()['profile_id'];
+			$messageList[$key]['app_user_name'] = $modelAppUser->where(['app_user_id' => $message['app_user_id']])->first()['app_user_name'];
+			$messageList[$key]['app_user_ava'] = $modelProfiles->where(['profile_id' => $profile_id])->first()['profile_img_ava'];
+		}
+
+		return $this->response->setStatusCode(202)->setJSON(['messageList' => $messageList]);
 	}
 }

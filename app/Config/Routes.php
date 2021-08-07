@@ -105,6 +105,7 @@ $routes->post('api/profile/get_invite_users', 'Clubs::get_invite_users');
 $routes->post('api/profile/invite_user', 'Clubs::invite_user');
 $routes->post('api/profile/get_notification', 'Clubs::get_notification');
 $routes->post('api/profile/invitation_accept_action', 'Clubs::invitation_action');
+$routes->post('api/profile/add_club_message', 'Clubs::add_club_message');
 
 $routes->get('/chat', 'Chat::index');
 $routes->get('/chat/getChatHistory', 'Chat::getChatHistory'); //
