@@ -81,7 +81,7 @@ class Register extends BaseController
 			}
 		}
     }
-
+	
     public function reset_user_pass()
     {
 		if ($this->request->getMethod() == 'post') {

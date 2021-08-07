@@ -314,7 +314,6 @@ class Clubs extends BaseController
 
 		$postData = $this->request->getPost();
 
-
 		$profile_id = $postData['profile_id'];
 		$app_user_id = $postData['app_user_id'];
 
