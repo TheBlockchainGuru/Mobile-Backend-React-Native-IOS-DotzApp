@@ -33,7 +33,7 @@ class Database extends \CodeIgniter\Database\Config
 		'DSN'      => 'mysql:dbname=dotz_dev;host=localhost;pConnect=true',
 		'hostname' => 'localhost',
 		'username' => 'root',
-		'password' => '',
+		'password' => 'Prodbyme89!',
 		'database' => 'dotz_dev',
 		'DBDriver' => 'MySQLi',
 		'DBPrefix' => '',
