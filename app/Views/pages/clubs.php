@@ -38,7 +38,7 @@
                                                         <div class="p-1 p-xl-4">
                                                             <div class="row">
                                                                 <div class="col-md-6">
-                                                                    <img src="<?=base_url('/uploads/clubs/'.$club['club_img'])?>" alt="" style="max-width:100%;height:auto;">
+                                                                    <img src="/uploads/clubs/<?php $club['club_img']?>" alt="" style="max-width:100%;height:auto;">
                                                                 </div>
                                                                 <div class="col-md-6">
                                                                 <p class="text-muted"><?=$club['club_description']?></p>

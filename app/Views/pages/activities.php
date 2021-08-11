@@ -38,7 +38,7 @@
                                                         <div class="p-1 p-xl-4">
                                                             <div class="row">
                                                                 <div class="col-md-6">
-                                                                    <img src="<?=base_url('/uploads/activities/'.$activity['activity_img'])?>" alt="" style="max-width:100%;height:auto;">
+                                                                    <img src="/uploads/activities/<?=$activity['activity_img']?>" alt="" style="max-width:100%;height:auto;">
                                                                 </div>
                                                                 <div class="col-md-6">
                                                                 <p class="text-muted"><?=$activity['activity_description']?></p>
