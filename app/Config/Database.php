@@ -30,9 +30,9 @@ class Database extends \CodeIgniter\Database\Config
 	 * @var array
 	 */
 	public $default = [
-		'DSN'      => 'mysql:dbname=dotz_dev;host=localhost;pConnect=true',
+		'DSN'      => '',
 		'hostname' => 'localhost',
-		'username' => 'dotz',
+		'username' => 'dotz_user',
 		'password' => 'Prodbyme89!',
 		'database' => 'dotz_dev',
 		'DBDriver' => 'MySQLi',

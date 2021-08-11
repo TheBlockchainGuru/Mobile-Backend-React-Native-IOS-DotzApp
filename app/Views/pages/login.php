@@ -49,7 +49,7 @@
 										<a href="auth-recoverpw" class="text-muted">Forgot password?</a>
 									</div>
 									<?php */ ?>
-									<label for="userpassword"><?=lang('Login.pass')?></label>
+									<label for="userpassword"></label>
 									<input type="password" class="form-control" id="userpassword" name="password" placeholder="Enter password">
 								</div>
 								<?php /* ?>
@@ -60,7 +60,7 @@
 								<?php */ ?>
 								
 								<div class="mt-3 text-right">
-									<button class="btn btn-primary w-sm waves-effect waves-light" type="submit"><?=lang('Login.sign_in')?></button>
+									<button class="btn btn-primary w-sm waves-effect waves-light" type="submit"></button>
 								</div>
 							</form>
 						</div>
