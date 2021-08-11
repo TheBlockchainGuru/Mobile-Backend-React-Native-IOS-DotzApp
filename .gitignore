@@ -128,5 +128,5 @@ nb-configuration.xml
 
 /.php-cs-fixer.php
 
-# # asset uploaded
-# public/uploads/*
+# asset uploaded
+public/uploads/*
