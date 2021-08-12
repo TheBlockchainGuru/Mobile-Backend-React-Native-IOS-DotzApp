@@ -133,4 +133,4 @@ public/uploads/*
 
 .env
 
-app/Config/Database.php
+app/Config/*
