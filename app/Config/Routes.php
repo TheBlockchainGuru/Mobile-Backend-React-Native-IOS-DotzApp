@@ -108,6 +108,9 @@ $routes->post('api/profile/invitation_accept_action', 'Clubs::invitation_action'
 $routes->post('api/profile/add_club_message', 'Clubs::add_club_message');
 $routes->post('api/profile/remove_friend', 'Clubs::remove_friend');
 
+$routes->post('/clubs/updateClub', 'Clubs::update_club');
+$routes->post('/clubs/delete_club', 'Clubs::delete_club');
+
 $routes->get('/chat', 'Chat::index');
 $routes->get('/chat/getChatHistory', 'Chat::getChatHistory'); //
 $routes->get('api/chat/getChatHistory', 'Chat_api::getChatHistory'); //

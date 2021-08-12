@@ -29,6 +29,70 @@ class Clubs extends BaseController
 		echo view('templates/footer');
 	}
 
+	public function update_club()
+    {
+		if ($this->request->getMethod() !== 'post') return;
+		if (!empty($_FILES['club_img']['name'])) {
+			$img = $this->request->getFile('club_img');
+			if ($img->isValid() && ! $img->hasMoved()) {
+				$img->move('./uploads/clubs',$img->getClientName());
+			}
+		} else {
+			$img = null;
+		}
+	
+		$modelClubs = new ClubsModel();
+		$club_name = $this->request->getVar('club_name');
+
+		$id = $this->request->getVar('club_id');
+		$newData = [
+			'club_name' => $this->request->getVar('club_name'),
+			'club_description' => $this->request->getVar('club_description'),
+		];
+		if ($img) $newData['club_img'] = $img->getClientName();
+
+		if ($modelClubs->update($id, $newData)) {
+			$session = session();
+			$session->setFlashdata('msg', "\"{$club_name}\" updated!");
+			return redirect()->to(base_url('/clubs'));
+		} else {
+			$session = session();
+			$session->setFlashdata('msg', "Error updating \"{$club_name}\"");
+		}
+    }
+
+	public function delete_club()
+	{
+		if ($this->request->getMethod() == 'post') {
+			$rules = [
+				'club_id' => 'integer|matches[club_id]',
+			];
+			$club_id = $this->request->getVar('club_id');
+			$club_name = $this->request->getVar('club_name');
+
+			if (! $this->validate($rules)) {
+                $data['validation'] = $this->validator;
+                echo $club_id;
+                echo $this->validator->listErrors();
+			} else {
+                $model = new ClubsModel();
+				$modelClubUsers = new ClubUsersModel;
+				$modelClubMessages = new ClubMessagesModel;
+				$modelClubInvitations = new ClubInvitationsModel;
+
+				$modelClubInvitations->where(['club_id' => $club_id])->delete();
+				$modelClubMessages->where(['club_id' => $club_id])->delete();
+				$modelClubUsers->where(['club_id' => $club_id])->delete();
+                
+				$model->delete($club_id);
+				$session = session();
+                $session->setFlashdata('msg', "{$club_name} was deleted");
+                
+				return redirect()->to('/clubs');
+			}
+		}
+	}
+
 	public function get_clubs() {
 		$request = new Request();
 		$modelAppUser = new AppUserModel;
