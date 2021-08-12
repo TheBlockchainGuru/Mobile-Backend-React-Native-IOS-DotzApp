@@ -52,14 +52,14 @@
                                                         <li class="list-inline-item">
                                                             <form action="/clubs/delete_club" method="post" enctype="multipart/form-data" name="delete_club_<?=$club['club_id']?>" class="p-xl-3 m-0 text-primary" data-toggle="tooltip" data-placement="top" title="Edit" style="padding: 0 10px;">
                                                                 <input type="hidden" value="<?=$club['club_id']?>" name="club_id">
-                                                                    <button type="button" data-toggle="modal" data-target="#editClub" data-club_info="<?=htmlspecialchars($club_info, ENT_QUOTES, 'UTF-8')?>" class="text-primary p-0" style="background:none;border: none;height: 20px;"><i class="uil uil-pen font-size-18"></i></button>
+                                                                <button type="button" data-toggle="modal" data-target="#editClub" data-club_info="<?=htmlspecialchars($club_info, ENT_QUOTES, 'UTF-8')?>" class="text-primary p-0" style="background:none;border: none;height: 20px;"><i class="uil uil-pen font-size-18"></i>Edit</button>
                                                             </form>
                                                         </li>
                                                         <li class="list-inline-item">
                                                             <form action="/clubs/delete_club" method="post" enctype="multipart/form-data" name="delete_club_<?=$club['club_id']?>" class="p-xl-3 m-0 text-danger" data-toggle="tooltip" data-placement="top" title="Delete" style="padding: 0 10px;">
                                                                 <input type="hidden" value="<?=$club['club_id']?>" name="club_id">
                                                                 <input type="hidden" value="<?=$club['club_name']?>" name="club_name">
-                                                                    <button type="submit" class="text-danger p-0" style="background:none;border: none;height: 20px;"><i class="uil uil-trash-alt font-size-18"></i></button>
+                                                                <button type="submit" class="text-danger p-0" style="background:none;border: none;height: 20px;"><i class="uil uil-trash-alt font-size-18"></i>Delete</button>
                                                             </form>
                                                         </li>
                                                     </ul>
