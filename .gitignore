@@ -130,3 +130,7 @@ nb-configuration.xml
 
 # asset uploaded
 public/uploads/*
+
+.env
+
+app/Config/Database.php
