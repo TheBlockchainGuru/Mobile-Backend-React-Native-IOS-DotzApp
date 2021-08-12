@@ -36,7 +36,6 @@ Options All -Indexes
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
-	Header set Access-Control-Allow-Origin 'origin-list'
 </IfModule>
 
 <IfModule !mod_rewrite.c>
@@ -48,3 +47,5 @@ Options All -Indexes
 # Disable server signature start
     ServerSignature Off
 # Disable server signature end
+
+Header set Access-Control-Allow-Origin 'origin-list'
