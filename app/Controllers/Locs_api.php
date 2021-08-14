@@ -43,7 +43,7 @@ class Locs_api extends ResourceController
 			$activities = $modelActivities->findAll();
 			$AppUsers = $modelAppUser->findAll();
             $allComments = $modelProfilesPostsComments->findAll();
-			echo "Arigato"; exit;
+
 			foreach ($locs as $loc_key => $loc) {
 				foreach ($ac_loc_rels as $ac_loc_rel) {
 					if ($loc['loc_id'] == $ac_loc_rel['loc_id']) {
@@ -55,6 +55,9 @@ class Locs_api extends ResourceController
 					}
 				}
 				$records = json_decode($loc['loc_records']);
+
+				echo "Step 1"; exit;
+				
 				if (!empty($records)) {
 					foreach ($records as $record) {
 						if (property_exists($record,'app_user_id')) {
