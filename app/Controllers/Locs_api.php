@@ -27,9 +27,9 @@ class Locs_api extends ResourceController
 
 	public function index()
 	{
-		echo 1; exit;
         if ($this->is_token_valid())
         {
+			echo "OK!"; exit;
 			$modelAppUser = new AppUserModel;
 			$modelAc_loc_rels = new ActivitiesLocsRelsModel;
 			$modelActivities = new ActivitiesModel;
@@ -38,13 +38,13 @@ class Locs_api extends ResourceController
             $modelProf_act_rels = new Prof_act_relsModel;
             $modelProfilesPosts = new ProfilesPostsModel;
             $modelProfilesPostsComments = new ProfilesPostsComments;
-			
+			echo "OK!"; exit;
 			$locs = $this->model->findAll();
 			$ac_loc_rels = $modelAc_loc_rels->findAll();
 			$activities = $modelActivities->findAll();
 			$AppUsers = $modelAppUser->findAll();
             $allComments = $modelProfilesPostsComments->findAll();
-
+			echo "OK!"; exit;
 			foreach ($locs as $loc_key => $loc) {
 				foreach ($ac_loc_rels as $ac_loc_rel) {
 					if ($loc['loc_id'] == $ac_loc_rel['loc_id']) {
@@ -104,7 +104,9 @@ class Locs_api extends ResourceController
 			}
 			return $this->respond($locs);
 		}
-		else return $this->response->setStatusCode(400)->setJSON(["error"=>"Token is not valid"]);
+		else {
+			return $this->response->setStatusCode(400)->setJSON(["error"=>"Token is not valid"]);
+		}
 	}
 
 	public function loc_record()
