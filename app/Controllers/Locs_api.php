@@ -62,6 +62,7 @@ class Locs_api extends ResourceController
 							$profile = $modelProfiles->getByAppUserId($record->app_user_id);
 							
 							$friends = $modelProfile_rels->where( ['profile_id' => $profile['profile_id'], 'profile_rel_status' => 'friends'] )->select(['app_user_id'])->findAll();
+							echo "Step 3"; exit;
 							foreach ($friends as $friend_key => $friend) {
 								foreach ($AppUsers as $app_user_friend) {
 									if ( $friend['app_user_id'] == $app_user_friend['app_user_id'] ) {
