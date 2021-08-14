@@ -27,6 +27,7 @@ class Locs_api extends ResourceController
 
 	public function index()
 	{
+		echo 1; exit;
         if ($this->is_token_valid())
         {
 			$modelAppUser = new AppUserModel;
