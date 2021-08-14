@@ -29,7 +29,6 @@ class Locs_api extends ResourceController
 	{
         if ($this->is_token_valid())
         {
-			echo "OK!"; exit;
 			$modelAppUser = new AppUserModel;
 			$modelAc_loc_rels = new ActivitiesLocsRelsModel;
 			$modelActivities = new ActivitiesModel;
