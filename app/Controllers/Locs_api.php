@@ -37,13 +37,13 @@ class Locs_api extends ResourceController
             $modelProf_act_rels = new Prof_act_relsModel;
             $modelProfilesPosts = new ProfilesPostsModel;
             $modelProfilesPostsComments = new ProfilesPostsComments;
-			echo "OK!"; exit;
+
 			$locs = $this->model->findAll();
 			$ac_loc_rels = $modelAc_loc_rels->findAll();
 			$activities = $modelActivities->findAll();
 			$AppUsers = $modelAppUser->findAll();
             $allComments = $modelProfilesPostsComments->findAll();
-			echo "OK!"; exit;
+			echo "Arigato"; exit;
 			foreach ($locs as $loc_key => $loc) {
 				foreach ($ac_loc_rels as $ac_loc_rel) {
 					if ($loc['loc_id'] == $ac_loc_rel['loc_id']) {
