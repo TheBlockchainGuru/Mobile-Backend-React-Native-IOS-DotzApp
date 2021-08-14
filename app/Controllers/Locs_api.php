@@ -60,7 +60,7 @@ class Locs_api extends ResourceController
 					foreach ($records as $record) {
 						if (property_exists($record,'app_user_id')) {
 							$profile = $modelProfiles->getByAppUserId($record->app_user_id);
-							var_dump($profile); exit;
+							var_dump($records); exit;
 							$friends = $modelProfile_rels->where( ['profile_id' => $profile['profile_id'], 'profile_rel_status' => 'friends'] )->select(['app_user_id'])->findAll();
 							echo "Step 3"; exit;
 							foreach ($friends as $friend_key => $friend) {
@@ -83,8 +83,6 @@ class Locs_api extends ResourceController
 								}
 							}
 							$profile['friends'] = $friends;
-
-							echo "Step 3"; exit;
 
 							$act_rels = $modelProf_act_rels->where( ['profile_id' => $profile['profile_id']] )->select(['activity_id'])->findAll();
 							$profile['activities'] = [];
