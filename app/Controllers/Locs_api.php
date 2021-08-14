@@ -60,7 +60,7 @@ class Locs_api extends ResourceController
 					foreach ($records as $record) {
 						if (property_exists($record,'app_user_id')) {
 							$profile = $modelProfiles->getByAppUserId($record->app_user_id);
-							
+							echo "Step Pass?"; exit;
 							$friends = $modelProfile_rels->where( ['profile_id' => $profile['profile_id'], 'profile_rel_status' => 'friends'] )->select(['app_user_id'])->findAll();
 							echo "Step 3"; exit;
 							foreach ($friends as $friend_key => $friend) {
