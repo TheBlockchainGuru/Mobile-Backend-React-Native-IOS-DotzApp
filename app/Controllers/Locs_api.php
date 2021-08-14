@@ -109,7 +109,7 @@ class Locs_api extends ResourceController
 					$locs[$loc_key]['loc_records'] = $records;
 				}
 			}
-			var_dump($locs); exit;
+
 			return $this->respond($locs);
 		}
 		else {
