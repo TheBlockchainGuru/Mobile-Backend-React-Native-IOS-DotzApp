@@ -56,11 +56,12 @@ class Locs_api extends ResourceController
 				}
 				$records = json_decode($loc['loc_records']);
 
-				echo "Step 1"; exit;
-				
 				if (!empty($records)) {
 					foreach ($records as $record) {
 						if (property_exists($record,'app_user_id')) {
+
+							echo "Step 2"; exit;
+							
 							$profile = $modelProfiles->getByAppUserId($record->app_user_id);
 							
 							$friends = $modelProfile_rels->where( ['profile_id' => $profile['profile_id'], 'profile_rel_status' => 'friends'] )->select(['app_user_id'])->findAll();
@@ -85,6 +86,8 @@ class Locs_api extends ResourceController
 							}
 							$profile['friends'] = $friends;
 
+							echo "Step 3"; exit;
+
 							$act_rels = $modelProf_act_rels->where( ['profile_id' => $profile['profile_id']] )->select(['activity_id'])->findAll();
 							$profile['activities'] = [];
 							foreach ($act_rels as $act_rel) $profile['activities'][] = $act_rel['activity_id'];
@@ -103,6 +106,7 @@ class Locs_api extends ResourceController
 					}
 					$locs[$loc_key]['loc_records'] = $records;
 				}
+				echo "Step complete"; exit;
 			}
 			return $this->respond($locs);
 		}
