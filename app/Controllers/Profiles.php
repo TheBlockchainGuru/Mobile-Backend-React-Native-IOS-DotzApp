@@ -396,6 +396,35 @@ class Profiles extends BaseController
 		return $this->response->setStatusCode(400)->setJSON(["error"=>"Something went wrong."]);
 	}
 
+	public function delete_feed() {
+		$oauth = new Oauth();
+		$request = new Request();
+		$modelAppUser = new AppUserModel;
+		$modelAppUserRels = new AppUserRelsModel;
+		$modelProfiles = new ProfilesModel;
+		$modelMedia = new MediaModel;
+		$modelMediaComment = new MediaCommentModel;
+		$modelUserMedia = new UserMediaModel;
+
+		$postData = $this->request->getPost();
+
+		$user_media_id = $postData['feed_id'];
+		$app_user_id = $modelUserMedia->where(['id' => $user_media_id])->first()['app_user_id'];
+		
+		// delete action
+		$modelUserMedia->where(['id' => $user_media_id])->delete();
+		$modelMediaComment->where(['user_media_id' => $user_media_id])->delete();
+
+		$userMedias = $modelUserMedia->where([ 'app_user_id' => $app_user_id ])->findAll();
+
+		foreach( $userMedias as $key => $userMedia ) {
+			$userMedias[$key]['info'] = $modelMedia->find( $userMedia['media_id'] );
+			$userMedias[$key]['comment'] = $modelMediaComment->where([ 'user_media_id' => $userMedia['id'] ])->findAll();
+		}
+
+		return $this->response->setStatusCode(202)->setJSON(['mediaList' => $userMedias]);
+	}
+
 	public function like_feed() {
 		$request = new Request();
 		$modelUserMedia = new UserMediaModel;
