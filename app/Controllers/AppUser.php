@@ -148,7 +148,7 @@ class AppUser extends BaseController
 			$modelProf_act_rel = new Prof_act_relsModel;
 
 			if( $model->where(['app_user_name' => $this->request->getVar('name')])->first() ) {
-				return $this->response->setStatusCode(202)->setJSON(["error"=>"Duplicate Username!"]);
+				return $this->response->setStatusCode(202)->setJSON(["error"=>"You have entered a duplicate Username!"]);
 			}
 
 			// Check Activities

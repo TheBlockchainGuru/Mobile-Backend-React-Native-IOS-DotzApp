@@ -91,6 +91,7 @@ $routes->post('api/profile/like_feed', 'Profiles::like_feed');
 $routes->post('api/profile/share_feed', 'Profiles::share_feed');
 $routes->post('api/profile/comment_feed', 'Profiles::comment_feed');
 $routes->post('api/profile/add_comment', 'Profiles::add_comment_feed');
+$routes->post('api/profile/delete_comment', 'Profiles::delete_comment_feed');
 $routes->post('api/profile/delete_feed', 'Profiles::delete_feed');
 
 // Clubs
