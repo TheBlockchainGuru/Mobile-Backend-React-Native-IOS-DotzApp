@@ -543,4 +543,19 @@ class Profiles extends BaseController
 
 		return redirect()->to('profiles');
 	}
+
+	public function delete_comment_feed() {
+		$request = new Request();
+		$modelMediaComment = new MediaCommentModel;
+
+		$postData = $this->request->getPost();
+		$comment_id = $postData['comment_id'];
+
+		$user_media_id = $modelMediaComment->where(['id' => $comment_id])->first()['user_media_id'];
+
+		$modelMediaComment->where(['id' => $comment_id])->delete();
+
+		$commentList = $modelMediaComment->where(['user_media_id' => $user_media_id])->findAll();
+		return $this->response->setStatusCode(202)->setJSON(['commentList' => $commentList]);
+	}
 }
