@@ -128,15 +128,11 @@ class AppUser extends BaseController
 		$password = $this->request->getVar('password');
 		$scope = $userType == 548 ? $this->request->getVar('scope') : 'app_pass';
 		$scope_allowed = $userType == 548 ? 'app_token' : 'app_pass';
-		// $password = $userType == 548 ? '' : $this->request->getVar('password');
 		$password_rules = 'required|min_length[8]';
-		// $password_rules = $userType == 548 ? 'max_length[8]' : 'required|min_length[8]';
-		// if ($userType == 548) return $this->fail('asdasd');
 
 		$rules = [
 			'email' => "required|valid_email|is_unique[app_users.email,email.{$email}]",
 			'password' => $password_rules,
-			// 'scope' => 'required|in_list['.$scope_allowed.']',
 			'name' => 'required|min_length[3]|max_length[20]',
 		];
 
@@ -150,6 +146,10 @@ class AppUser extends BaseController
 			$modelProfiles = new ProfilesModel;
 			$modelActivities = new ActivitiesModel;
 			$modelProf_act_rel = new Prof_act_relsModel;
+
+			if( $model->where(['app_user_name' => $this->request->getVar('name')])->first() ) {
+				return $this->response->setStatusCode(400)->setJSON(["error"=>"Duplicate AppUserName."]);
+			}
 
 			// Check Activities
 			if ($this->request->getVar('activities')) {
