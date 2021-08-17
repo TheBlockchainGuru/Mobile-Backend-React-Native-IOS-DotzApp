@@ -353,9 +353,9 @@ class Clubs extends BaseController
 		$content = $postData['content'];
 
 		$app_user_id = $modelAppUserRels->where(['profile_id' => $profile_id])->first()['app_user_id'];
-
+		echo 'here1???'; exit;
 		$modelClubMessages->insert(['app_user_id' => $app_user_id, 'club_id' => $club_id, 'content' => $content]);
-
+		echo 'here2???'; exit;
 		$messageList = $modelClubMessages->where(['club_id' => $club_id])->findAll();
 
 		foreach( $messageList as $key => $message ) {
