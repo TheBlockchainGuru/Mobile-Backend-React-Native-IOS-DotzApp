@@ -198,7 +198,7 @@ class Chat implements MessageComponentInterface {
             $msg_type = 'msg';
             $ChatHistoryModel = new ChatHistoryModel();
             $msgTimeSentServer = Time::createFromTimestamp($msgTimeSent / 1000);
-    
+            $from->send('123123');
             $data = [
                 'author_id' => $from->user['user_id'],
                 'author_name' => $from->user['nice_name'],
