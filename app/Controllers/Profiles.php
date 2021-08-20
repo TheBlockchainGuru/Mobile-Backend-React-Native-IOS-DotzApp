@@ -13,6 +13,7 @@ use \OAuth2\Request;
 use App\Models\MediaModel;
 use App\Models\MediaCommentModel;
 use App\Models\UserMediaModel;
+use App\Models\MediaVoteModel;
 
 class Profiles extends BaseController
 {
@@ -334,6 +335,7 @@ class Profiles extends BaseController
 		$modelProfiles = new ProfilesModel;
 		$modelMedia = new MediaModel;
 		$modelMediaComment = new MediaCommentModel;
+		$modelMediaVote = new MediaVoteMode;
 		$modelUserMedia = new UserMediaModel;
 
 		$postData = $this->request->getPost();
@@ -345,6 +347,7 @@ class Profiles extends BaseController
 		foreach( $userMedias as $key => $userMedia ) {
 			$userMedias[$key]['info'] = $modelMedia->find( $userMedia['media_id'] );
 			$userMedias[$key]['comment'] = $modelMediaComment->where([ 'user_media_id' => $userMedia['id'] ])->findAll();
+			$userMedias[$key]['like_cnt'] = count($modelMediaVote->where(['user_media_id' => $userMedia['id']])->findAll());
 		}
 		
 		return $this->response->setStatusCode(202)->setJSON(['mediaList' => $userMedias]);
@@ -359,6 +362,7 @@ class Profiles extends BaseController
 		$modelMedia = new MediaModel;
 		$modelMediaComment = new MediaCommentModel;
 		$modelUserMedia = new UserMediaModel;
+		$modelMediaVote = new MediaVoteMode;
 
 		$postData = $this->request->getPost();
 
@@ -388,6 +392,7 @@ class Profiles extends BaseController
 			foreach( $userMedias as $key => $userMedia ) {
 				$userMedias[$key]['info'] = $modelMedia->find( $userMedia['media_id'] );
 				$userMedias[$key]['comment'] = $modelMediaComment->where([ 'user_media_id' => $userMedia['id'] ])->findAll();
+				$userMedias[$key]['like_cnt'] = count($modelMediaVote->where(['user_media_id' => $userMedia['id']])->findAll());
 			}
 
 			return $this->response->setStatusCode(202)->setJSON(['mediaList' => $userMedias]);
@@ -405,6 +410,7 @@ class Profiles extends BaseController
 		$modelMedia = new MediaModel;
 		$modelMediaComment = new MediaCommentModel;
 		$modelUserMedia = new UserMediaModel;
+		$modelMediaVote = new MediaVoteMode;
 
 		$postData = $this->request->getPost();
 
@@ -414,12 +420,14 @@ class Profiles extends BaseController
 		// delete action
 		$modelUserMedia->where(['id' => $user_media_id])->delete();
 		$modelMediaComment->where(['user_media_id' => $user_media_id])->delete();
+		$modelMediaVote->where(['user_media_id' => $user_media_id])->delete();
 
 		$userMedias = $modelUserMedia->where([ 'app_user_id' => $app_user_id ])->findAll();
 
 		foreach( $userMedias as $key => $userMedia ) {
 			$userMedias[$key]['info'] = $modelMedia->find( $userMedia['media_id'] );
 			$userMedias[$key]['comment'] = $modelMediaComment->where([ 'user_media_id' => $userMedia['id'] ])->findAll();
+			$userMedias[$key]['like_cnt'] = count($modelMediaVote->where(['user_media_id' => $userMedia['id']])->findAll());
 		}
 
 		return $this->response->setStatusCode(202)->setJSON(['mediaList' => $userMedias]);
@@ -428,17 +436,23 @@ class Profiles extends BaseController
 	public function like_feed() {
 		$request = new Request();
 		$modelUserMedia = new UserMediaModel;
+		$modelMediaVote = new MediaVoteMode;
+
 		$postData = $this->request->getPost();
 		
 		$media_id = $postData['id'];
-		$like_cnt = $modelUserMedia->find($media_id)['like_cnt'];
-		$like_cnt ++;
+		$app_user_id = $postData['app_user_id'];
+		
+		$temp = $modelMediaVote->where(['app_user_id' => $app_user_id, 'user_media_id' => $media_id])->first();
 
-		$modelUserMedia->where('id', $media_id)
-						->set(['like_cnt' => $like_cnt])
-						->update();
+		if( !empty($temp) ) {	// already exists;
+			return $this->response->setStatusCode(202)->setJSON(['message' => 'You have already voted this feed.']);
+		}
+
+		$modelMediaVote->insert(['app_user_id' => $app_user_id, 'user_media_id' => $media_id]);
 		
 		$updatedMedia = $modelUserMedia->find($media_id);
+		$updatedMedia['like_cnt'] = count( $modelMediaVote->where(['user_media_id' => $media_id])->findAll() );
 		return $this->response->setStatusCode(202)->setJSON([ 'updatedMedia' => $updatedMedia ]);
 	}
 
@@ -519,6 +533,21 @@ class Profiles extends BaseController
 		return $this->response->setStatusCode(202)->setJSON(['success' => true, 'commentList' => $commentList]);
 	}
 
+	public function delete_comment_feed() {
+		$request = new Request();
+		$modelMediaComment = new MediaCommentModel;
+
+		$postData = $this->request->getPost();
+		$comment_id = $postData['comment_id'];
+
+		$user_media_id = $modelMediaComment->where(['id' => $comment_id])->first()['user_media_id'];
+
+		$modelMediaComment->where(['id' => $comment_id])->delete();
+
+		$commentList = $modelMediaComment->where(['user_media_id' => $user_media_id])->findAll();
+		return $this->response->setStatusCode(202)->setJSON(['commentList' => $commentList]);
+	}
+
 	public function delete_profile() {
 		$request = new Request();
 		$modelProfiles = new ProfilesModel;
@@ -540,22 +569,6 @@ class Profiles extends BaseController
 		if( isset($profile_id) )
 			$modelProfiles->delete($profile_id);
 
-
 		return redirect()->to('profiles');
-	}
-
-	public function delete_comment_feed() {
-		$request = new Request();
-		$modelMediaComment = new MediaCommentModel;
-
-		$postData = $this->request->getPost();
-		$comment_id = $postData['comment_id'];
-
-		$user_media_id = $modelMediaComment->where(['id' => $comment_id])->first()['user_media_id'];
-
-		$modelMediaComment->where(['id' => $comment_id])->delete();
-
-		$commentList = $modelMediaComment->where(['user_media_id' => $user_media_id])->findAll();
-		return $this->response->setStatusCode(202)->setJSON(['commentList' => $commentList]);
 	}
 }
