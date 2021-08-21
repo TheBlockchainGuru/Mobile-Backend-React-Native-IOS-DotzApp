@@ -377,11 +377,9 @@ class Profiles extends BaseController
 		}
 		if( $media != null ) {
 			// Add to database
-			echo $postData['duration']; exit;
 			$duration = isset($postData['duration']) ? $postData['duration'] : 0;
-			echo $duration; exit;
 			$type = $duration > 0 ? 'Video': 'Image';
-			echo 1; exit;
+
 			$newMedia_id = $modelMedia->insert([ 'url' => $media->getClientName(), 'type' => $type, 'duration' => $duration ]);
 
 			$app_user_id = $modelAppUserRels->where(['profile_id' => $postData['profile_id']])->first()['app_user_id'];
@@ -394,7 +392,6 @@ class Profiles extends BaseController
 				$userMedias[$key]['comment'] = $modelMediaComment->where([ 'user_media_id' => $userMedia['id'] ])->findAll();
 				$userMedias[$key]['like_cnt'] = count($modelMediaVote->where(['user_media_id' => $userMedia['id']])->findAll());
 			}
-
 			return $this->response->setStatusCode(202)->setJSON(['mediaList' => $userMedias]);
 		}
 
