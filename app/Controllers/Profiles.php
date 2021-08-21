@@ -367,11 +367,8 @@ class Profiles extends BaseController
 		$postData = $this->request->getPost();
 
 		// Check File
-		echo $_FILES['media']['name'];
 		if (!empty($_FILES['media']['name'])) {	
-			echo 1; exit;
 			$media = $this->request->getFile('media');
-			var_dump($media); exit;
 			if ($media->isValid() && ! $media->hasMoved()) {
 				$media->move('./uploads/feeds',$media->getClientName());
 			}
