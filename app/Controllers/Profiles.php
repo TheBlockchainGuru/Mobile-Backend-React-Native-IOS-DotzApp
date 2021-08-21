@@ -343,7 +343,7 @@ class Profiles extends BaseController
 		$app_user_id = $modelAppUserRels->where(['profile_id' => $postData['profile_id']])->first()['app_user_id'];
 
 		$userMedias = $modelUserMedia->where([ 'app_user_id' => $app_user_id ])->findAll();
-
+		echo 123; exit;
 		foreach( $userMedias as $key => $userMedia ) {
 			$userMedias[$key]['info'] = $modelMedia->find( $userMedia['media_id'] );
 			$userMedias[$key]['comment'] = $modelMediaComment->where([ 'user_media_id' => $userMedia['id'] ])->findAll();
