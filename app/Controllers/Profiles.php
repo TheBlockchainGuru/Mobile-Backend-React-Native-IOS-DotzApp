@@ -378,7 +378,7 @@ class Profiles extends BaseController
 
 		if( $media != null ) {
 			// Add to database
-			$duration = isset($postData['media']['duration']) ? $postData['media']['duration'] : 0;
+			$duration = isset($postData['duration']) ? $postData['duration'] : 0;
 
 			$type = $duration > 0 ? 'Video': 'Image';
 			$newMedia_id = $modelMedia->insert([ 'url' => $media->getClientName(), 'type' => $type, 'duration' => $duration ]);
