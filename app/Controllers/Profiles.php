@@ -365,7 +365,7 @@ class Profiles extends BaseController
 		$modelMediaVote = new MediaVoteModel;
 
 		$postData = $this->request->getPost();
-
+		echo 1;exit;
 		// Check File
 		if (!empty($_FILES['media']['name'])) {	
 			$media = $this->request->getFile('media');
