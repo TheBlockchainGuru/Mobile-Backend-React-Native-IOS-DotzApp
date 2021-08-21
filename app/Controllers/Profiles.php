@@ -375,7 +375,6 @@ class Profiles extends BaseController
 		} else {
 			$media = null;
 		}
-var_dump($_FILES['media']); exit;
 		if( $media != null ) {
 			// Add to database
 			$duration = isset($postData['duration']) ? $postData['duration'] : 0;
@@ -386,7 +385,7 @@ var_dump($_FILES['media']); exit;
 			$app_user_id = $modelAppUserRels->where(['profile_id' => $postData['profile_id']])->first()['app_user_id'];
 
 			$modelUserMedia->insert(['app_user_id' => $app_user_id, 'media_id' => $newMedia_id]);
-
+echo 1; exit;
 			$userMedias = $modelUserMedia->where([ 'app_user_id' => $app_user_id ])->findAll();
 
 			foreach( $userMedias as $key => $userMedia ) {
