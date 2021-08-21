@@ -377,7 +377,7 @@ class Profiles extends BaseController
 		}
 		if( $media != null ) {
 			// Add to database
-			
+			echo 1; exit;
 			$duration = isset($postData['duration']) ? $postData['duration'] : 0;
 			echo $duration; exit;
 			$type = $duration > 0 ? 'Video': 'Image';
