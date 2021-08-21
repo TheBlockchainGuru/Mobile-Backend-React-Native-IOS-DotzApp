@@ -335,7 +335,7 @@ class Profiles extends BaseController
 		$modelProfiles = new ProfilesModel;
 		$modelMedia = new MediaModel;
 		$modelMediaComment = new MediaCommentModel;
-		$modelMediaVote = new MediaVoteMode;
+		$modelMediaVote = new MediaVoteModel;
 		$modelUserMedia = new UserMediaModel;
 
 		$postData = $this->request->getPost();
@@ -343,7 +343,7 @@ class Profiles extends BaseController
 		$app_user_id = $modelAppUserRels->where(['profile_id' => $postData['profile_id']])->first()['app_user_id'];
 
 		$userMedias = $modelUserMedia->where([ 'app_user_id' => $app_user_id ])->findAll();
-		echo 123; exit;
+
 		foreach( $userMedias as $key => $userMedia ) {
 			$userMedias[$key]['info'] = $modelMedia->find( $userMedia['media_id'] );
 			$userMedias[$key]['comment'] = $modelMediaComment->where([ 'user_media_id' => $userMedia['id'] ])->findAll();
@@ -362,7 +362,7 @@ class Profiles extends BaseController
 		$modelMedia = new MediaModel;
 		$modelMediaComment = new MediaCommentModel;
 		$modelUserMedia = new UserMediaModel;
-		$modelMediaVote = new MediaVoteMode;
+		$modelMediaVote = new MediaVoteModel;
 
 		$postData = $this->request->getPost();
 
@@ -410,7 +410,7 @@ class Profiles extends BaseController
 		$modelMedia = new MediaModel;
 		$modelMediaComment = new MediaCommentModel;
 		$modelUserMedia = new UserMediaModel;
-		$modelMediaVote = new MediaVoteMode;
+		$modelMediaVote = new MediaVoteModel;
 
 		$postData = $this->request->getPost();
 
@@ -436,7 +436,7 @@ class Profiles extends BaseController
 	public function like_feed() {
 		$request = new Request();
 		$modelUserMedia = new UserMediaModel;
-		$modelMediaVote = new MediaVoteMode;
+		$modelMediaVote = new MediaVoteModel;
 
 		$postData = $this->request->getPost();
 		
