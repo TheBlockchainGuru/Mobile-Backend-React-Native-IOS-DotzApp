@@ -368,6 +368,7 @@ class Profiles extends BaseController
 
 		// Check File
 		if (!empty($_FILES['media']['name'])) {	
+			echo 1; exit;
 			$media = $this->request->getFile('media');
 			var_dump($media); exit;
 			if ($media->isValid() && ! $media->hasMoved()) {
