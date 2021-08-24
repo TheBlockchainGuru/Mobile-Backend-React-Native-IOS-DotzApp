@@ -342,7 +342,7 @@ class Profiles extends BaseController
 
 		$app_user_id = $modelAppUserRels->where(['profile_id' => $postData['profile_id']])->first()['app_user_id'];
 
-		$userMedias = $modelUserMedia->where([ 'app_user_id' => $app_user_id ])->findAll();
+		$userMedias = $modelUserMedia->where([ 'app_user_id' => $app_user_id ])->orderBy('created_at', 'desc')->findAll();
 
 		foreach( $userMedias as $key => $userMedia ) {
 			$userMedias[$key]['info'] = $modelMedia->find( $userMedia['media_id'] );
@@ -385,7 +385,7 @@ class Profiles extends BaseController
 			$app_user_id = $modelAppUserRels->where(['profile_id' => $postData['profile_id']])->first()['app_user_id'];
 
 			$modelUserMedia->insert(['app_user_id' => $app_user_id, 'media_id' => $newMedia_id]);
-			$userMedias = $modelUserMedia->where([ 'app_user_id' => $app_user_id ])->findAll();
+			$userMedias = $modelUserMedia->where([ 'app_user_id' => $app_user_id ])->orderBy('created_at', 'desc')->findAll();
 
 			foreach( $userMedias as $key => $userMedia ) {
 				$userMedias[$key]['info'] = $modelMedia->find( $userMedia['media_id'] );
@@ -419,7 +419,7 @@ class Profiles extends BaseController
 		$modelMediaComment->where(['user_media_id' => $user_media_id])->delete();
 		$modelMediaVote->where(['user_media_id' => $user_media_id])->delete();
 
-		$userMedias = $modelUserMedia->where([ 'app_user_id' => $app_user_id ])->findAll();
+		$userMedias = $modelUserMedia->where([ 'app_user_id' => $app_user_id ])->orderBy('created_at', 'desc')->findAll();
 
 		foreach( $userMedias as $key => $userMedia ) {
 			$userMedias[$key]['info'] = $modelMedia->find( $userMedia['media_id'] );
