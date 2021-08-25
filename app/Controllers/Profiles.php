@@ -519,6 +519,7 @@ class Profiles extends BaseController
 		$user_media_id = $postData['id'];
 		$profile_id = $postData['profile_id'];
 		$comment = $postData['comment'];
+		$parent_id = $postData['parent_id'];
 		$app_user_id = $modelAppUserRels->where(['profile_id' => $profile_id])->first()['app_user_id'];
 
 		$temp = $modelMediaComment->where(['app_user_id' => $app_user_id, 'user_media_id' => $user_media_id])->first();
@@ -526,7 +527,7 @@ class Profiles extends BaseController
 		if( !empty($temp) )
 			return $this->response->setStatusCode(202)->setJSON(['message' => 'Has already commented']);
 		
-		$modelMediaComment->insert(['app_user_id' => $app_user_id, 'user_media_id' => $user_media_id, 'comment' => $comment]);
+		$modelMediaComment->insert(['app_user_id' => $app_user_id, 'user_media_id' => $user_media_id, 'comment' => $comment, 'parent_id' => $parent_id]);
 
 		$commentList = $modelMediaComment->where(['user_media_id' => $user_media_id])->findAll();
 		return $this->response->setStatusCode(202)->setJSON(['success' => true, 'commentList' => $commentList]);
