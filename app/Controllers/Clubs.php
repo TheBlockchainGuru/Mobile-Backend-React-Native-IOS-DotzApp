@@ -290,22 +290,6 @@ class Clubs extends BaseController
 		return $this->response->setStatusCode(202)->setJSON(['userList' => $userList]);
 	}
 
-	public function get_notification() {
-		$oauth = new Oauth();
-		$request = new Request();
-		$modelClubs = new ClubsModel;
-		$modelClubInvitations = new ClubInvitationsModel;
-
-		$postData = $this->request->getPost();
-		$app_user_id = $postData['app_user_id'];
-		$notifications = $modelClubInvitations->where(['app_user_id' => $app_user_id])->findAll();
-		foreach( $notifications as $key => $notification ) {
-			$notifications[$key]['club_name'] = $modelClubs->where(['club_id' => $notification['club_id']])->first()['club_name'];
-		}
-
-		return $this->response->setStatusCode(202)->setJSON(['notifications' => $notifications]);
-	}
-
 	public function invitation_action() {
 		$oauth = new Oauth();
 		$request = new Request();

@@ -94,6 +94,7 @@ $routes->post('api/profile/add_comment', 'Profiles::add_comment_feed');
 $routes->post('api/profile/delete_comment', 'Profiles::delete_comment_feed');
 $routes->post('api/profile/delete_feed', 'Profiles::delete_feed');
 
+$routes->post('api/profile/get_notification', 'Profiles::get_notification');
 // Clubs
 $routes->post('api/profile/get_clubs', 'Clubs::get_clubs');
 $routes->post('api/profile/add_club', 'Clubs::add_club');
@@ -105,7 +106,6 @@ $routes->post('api/profile/reject_invitation', 'Clubs::reject_invitation');
 $routes->post('api/profile/club_invitation', 'Clubs:get_club_invitation');
 $routes->post('api/profile/get_invite_users', 'Clubs::get_invite_users');
 $routes->post('api/profile/invite_user', 'Clubs::invite_user');
-$routes->post('api/profile/get_notification', 'Clubs::get_notification');
 $routes->post('api/profile/invitation_accept_action', 'Clubs::invitation_action');
 $routes->post('api/profile/add_club_message', 'Clubs::add_club_message');
 $routes->post('api/profile/remove_friend', 'Clubs::remove_friend');

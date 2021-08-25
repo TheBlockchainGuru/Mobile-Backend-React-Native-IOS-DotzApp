@@ -14,6 +14,8 @@ use App\Models\MediaModel;
 use App\Models\MediaCommentModel;
 use App\Models\UserMediaModel;
 use App\Models\MediaVoteModel;
+use App\Models\ClubInvitationsModel;
+use App\Models\NotificationModel;
 
 class Profiles extends BaseController
 {
@@ -487,7 +489,7 @@ class Profiles extends BaseController
 		$request = new Request();
 		$modelMediaComment = new MediaCommentModel;
 		$modelAppUser = new AppUserModel;
-		$modelAppUserRels = new AppUserRelsModel;;
+		$modelAppUserRels = new AppUserRelsModel;
 		$modelProfiles = new ProfilesModel;
 
 		$postData = $this->request->getPost();
@@ -567,5 +569,29 @@ class Profiles extends BaseController
 			$modelProfiles->delete($profile_id);
 
 		return redirect()->to('profiles');
+	}
+
+	public function get_notification() {
+		$oauth = new Oauth();
+		$request = new Request();
+		$modelClubs = new ClubsModel;
+		$modelClubInvitations = new ClubInvitationsModel;
+		$modelNotification = new NotificationModel;
+
+		$postData = $this->request->getPost();
+		$app_user_id = $postData['app_user_id'];
+		$notifications = $modelClubInvitations->where(['app_user_id' => $app_user_id])->findAll();
+		foreach( $notifications as $key => $notification ) {
+			$notifications[$key]['club_name'] = $modelClubs->where(['club_id' => $notification['club_id']])->first()['club_name'];
+			$notifications[$key]['type'] = 'club_invitation';
+		}
+
+		$temp = $modelNotification->where(['app_user_id' => $app_user_id, 'read' => '0'])->orderBy('created_at', 'desc')->findAll();
+		foreach( $temp as $key => $tmp ) {
+			$tmp['type'] = 'notify';
+			array_push($notifications, $tmp);
+		}
+
+		return $this->response->setStatusCode(202)->setJSON(['notifications' => $notifications]);
 	}
 }
