@@ -506,7 +506,7 @@ class Profiles extends BaseController
 			$commentList[$key]['posterName'] = $posterName;
 			$commentList[$key]['posterAvatar'] = $posterAvatar;
 
-			$commentList[$key]['replyList'] = $modelMediaComment->where(['parent_id' => $commentList[$key]])->findAll();
+			$commentList[$key]['replyList'] = $modelMediaComment->where(['parent_id' => $commentList[$key]['id']])->findAll();
 			foreach( $commentList[$key]['replyList'] as $idx => $reply ) {
 				$app_user_id = $reply['app_user_id'];
 				$profile_id = $modelAppUserRels->where(['app_user_id' => $app_user_id])->first()['profile_id'];
@@ -569,7 +569,7 @@ class Profiles extends BaseController
 			$commentList[$key]['posterName'] = $posterName;
 			$commentList[$key]['posterAvatar'] = $posterAvatar;
 
-			$commentList[$key]['replyList'] = $modelMediaComment->where(['parent_id' => $commentList[$key]])->findAll();
+			$commentList[$key]['replyList'] = $modelMediaComment->where(['parent_id' => $commentList[$key]['id']])->findAll();
 			foreach( $commentList[$key]['replyList'] as $idx => $reply ) {
 				$app_user_id = $reply['app_user_id'];
 				$profile_id = $modelAppUserRels->where(['app_user_id' => $app_user_id])->first()['profile_id'];
@@ -614,7 +614,7 @@ class Profiles extends BaseController
 			$commentList[$key]['posterName'] = $posterName;
 			$commentList[$key]['posterAvatar'] = $posterAvatar;
 
-			$commentList[$key]['replyList'] = $modelMediaComment->where(['parent_id' => $commentList[$key]])->findAll();
+			$commentList[$key]['replyList'] = $modelMediaComment->where(['parent_id' => $commentList[$key]['id']])->findAll();
 			foreach( $commentList[$key]['replyList'] as $idx => $reply ) {
 				$app_user_id = $reply['app_user_id'];
 				$profile_id = $modelAppUserRels->where(['app_user_id' => $app_user_id])->first()['profile_id'];
