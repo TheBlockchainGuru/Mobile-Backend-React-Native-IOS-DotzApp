@@ -704,6 +704,6 @@ class Profiles extends BaseController
 			array_push($notifications, $tmp);
 		}
 
-		return $this->response->setStatusCode(202)->setJSON(['notifications' => $notifications]);
+		return $this->response->setStatusCode(202)->setJSON(['notifications' => $notifications, 'message' => 'You have seen the notification.']);
 	}
 }
