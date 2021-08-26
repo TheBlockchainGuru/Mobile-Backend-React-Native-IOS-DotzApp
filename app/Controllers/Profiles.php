@@ -348,7 +348,7 @@ class Profiles extends BaseController
 
 		foreach( $userMedias as $key => $userMedia ) {
 			$userMedias[$key]['info'] = $modelMedia->find( $userMedia['media_id'] );
-			$userMedias[$key]['comment'] = $modelMediaComment->where([ 'user_media_id' => $userMedia['id'] ])->findAll();
+			$userMedias[$key]['comment'] = $modelMediaComment->where([ 'user_media_id' => $userMedia['id'], 'parent_id' => '0' ])->findAll();
 			$userMedias[$key]['like_cnt'] = count($modelMediaVote->where(['user_media_id' => $userMedia['id']])->findAll());
 		}
 		
@@ -391,7 +391,7 @@ class Profiles extends BaseController
 
 			foreach( $userMedias as $key => $userMedia ) {
 				$userMedias[$key]['info'] = $modelMedia->find( $userMedia['media_id'] );
-				$userMedias[$key]['comment'] = $modelMediaComment->where([ 'user_media_id' => $userMedia['id'] ])->findAll();
+				$userMedias[$key]['comment'] = $modelMediaComment->where([ 'user_media_id' => $userMedia['id'], 'parent_id' => '0' ])->findAll();
 				$userMedias[$key]['like_cnt'] = count($modelMediaVote->where(['user_media_id' => $userMedia['id']])->findAll());
 			}
 			return $this->response->setStatusCode(202)->setJSON(['mediaList' => $userMedias]);
@@ -425,7 +425,7 @@ class Profiles extends BaseController
 
 		foreach( $userMedias as $key => $userMedia ) {
 			$userMedias[$key]['info'] = $modelMedia->find( $userMedia['media_id'] );
-			$userMedias[$key]['comment'] = $modelMediaComment->where([ 'user_media_id' => $userMedia['id'] ])->findAll();
+			$userMedias[$key]['comment'] = $modelMediaComment->where([ 'user_media_id' => $userMedia['id'], 'parent_id' => '0' ])->findAll();
 			$userMedias[$key]['like_cnt'] = count($modelMediaVote->where(['user_media_id' => $userMedia['id']])->findAll());
 		}
 
