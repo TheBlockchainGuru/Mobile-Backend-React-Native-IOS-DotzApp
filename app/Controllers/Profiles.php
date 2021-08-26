@@ -535,8 +535,8 @@ class Profiles extends BaseController
 
 		$temp = $modelMediaComment->where(['app_user_id' => $app_user_id, 'user_media_id' => $user_media_id])->first();
 
-		if( !empty($temp) )
-			return $this->response->setStatusCode(202)->setJSON(['message' => 'Has already commented']);
+		// if( !empty($temp) )
+		// 	return $this->response->setStatusCode(202)->setJSON(['message' => 'Has already commented']);
 		
 		$modelMediaComment->insert(['app_user_id' => $app_user_id, 'user_media_id' => $user_media_id, 'comment' => $comment, 'parent_id' => $parent_id]);
 
