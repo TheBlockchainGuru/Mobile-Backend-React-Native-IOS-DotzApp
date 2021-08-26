@@ -495,7 +495,7 @@ class Profiles extends BaseController
 		$postData = $this->request->getPost();
 		$user_media_id = $postData['id'];
 
-		$commentList = $modelMediaComment->where(['user_media_id' => $user_media_id])->findAll();
+		$commentList = $modelMediaComment->where(['user_media_id' => $user_media_id, 'parent_id' => '0'])->findAll();
 
 		foreach( $commentList as $key => $comment ) {
 			$app_user_id = $comment['app_user_id'];
@@ -505,6 +505,17 @@ class Profiles extends BaseController
 
 			$commentList[$key]['posterName'] = $posterName;
 			$commentList[$key]['posterAvatar'] = $posterAvatar;
+
+			$commentList[$key]['replyList'] = $modelMediaComment->where(['parent_id' => $commentList[$key]])->findAll();
+			foreach( $commentList[$key]['replyList'] as $idx => $reply ) {
+				$app_user_id = $reply['app_user_id'];
+				$profile_id = $modelAppUserRels->where(['app_user_id' => $app_user_id])->first()['profile_id'];
+				$posterName = $modelAppUser->find($app_user_id)['app_user_name'];
+				$posterAvatar = $modelProfiles->find($profile_id)['profile_img_ava'];
+
+				$commentList[$key]['replyList'][$idx]['posterName'] = $posterName;
+				$commentList[$key]['replyList'][$idx]['posterAvatar'] = $posterAvatar;
+			}
 		}
 
 		return $this->response->setStatusCode(202)->setJSON(['commentList' => $commentList]);
@@ -536,6 +547,9 @@ class Profiles extends BaseController
 	public function delete_comment_feed() {
 		$request = new Request();
 		$modelMediaComment = new MediaCommentModel;
+		$modelAppUser = new AppUserModel;
+		$modelAppUserRels = new AppUserRelsModel;
+		$modelProfiles = new ProfilesModel;
 
 		$postData = $this->request->getPost();
 		$comment_id = $postData['comment_id'];
@@ -545,6 +559,72 @@ class Profiles extends BaseController
 		$modelMediaComment->where(['id' => $comment_id])->delete();
 
 		$commentList = $modelMediaComment->where(['user_media_id' => $user_media_id])->findAll();
+
+		foreach( $commentList as $key => $comment ) {
+			$app_user_id = $comment['app_user_id'];
+			$profile_id = $modelAppUserRels->where(['app_user_id' => $app_user_id])->first()['profile_id'];
+			$posterName = $modelAppUser->find($app_user_id)['app_user_name'];
+			$posterAvatar = $modelProfiles->find($profile_id)['profile_img_ava'];
+
+			$commentList[$key]['posterName'] = $posterName;
+			$commentList[$key]['posterAvatar'] = $posterAvatar;
+
+			$commentList[$key]['replyList'] = $modelMediaComment->where(['parent_id' => $commentList[$key]])->findAll();
+			foreach( $commentList[$key]['replyList'] as $idx => $reply ) {
+				$app_user_id = $reply['app_user_id'];
+				$profile_id = $modelAppUserRels->where(['app_user_id' => $app_user_id])->first()['profile_id'];
+				$posterName = $modelAppUser->find($app_user_id)['app_user_name'];
+				$posterAvatar = $modelProfiles->find($profile_id)['profile_img_ava'];
+
+				$commentList[$key]['replyList'][$idx]['posterName'] = $posterName;
+				$commentList[$key]['replyList'][$idx]['posterAvatar'] = $posterAvatar;
+			}
+		}
+		return $this->response->setStatusCode(202)->setJSON(['commentList' => $commentList]);
+	}
+
+	public function reply_comment() {
+		$request = new Request();
+		$modelMediaComment = new MediaCommentModel;
+		$modelAppUser = new AppUserModel;
+		$modelAppUserRels = new AppUserRelsModel;
+		$modelProfiles = new ProfilesModel;
+		$modelNotification = new NotificationModel;
+		
+		$postData = $this->request->getPost();
+		$parent_id = $postData['parent_id'];
+		$comment = $postData['content'];
+		$app_user_id = $postData['app_user_id'];
+		$user_media_id = $modelMediaComment->find($parent_id)['id'];
+
+		$modelMediaComment->insert(['app_user_id' => $app_user_id, 'user_media_id' => $user_media_id, 'comment' => $comment, 'parent_id' => $parent_id]);
+
+		$app_user_name = $modelAppUser->find($app_user_id)['app_user_name'];
+		$notify_user_id = $modelMediaComment->find($parent_id)['app_user_id'];
+		$modelNotification->insert(['app_user_id' => $notify_user_id, 'content' => $app_user_name.' has replied to your comment!', 'read' => '0']);
+
+		$commentList = $modelMediaComment->where(['user_media_id' => $user_media_id, 'parent_id' => '0' ])->findAll();
+		
+		foreach( $commentList as $key => $comment ) {
+			$app_user_id = $comment['app_user_id'];
+			$profile_id = $modelAppUserRels->where(['app_user_id' => $app_user_id])->first()['profile_id'];
+			$posterName = $modelAppUser->find($app_user_id)['app_user_name'];
+			$posterAvatar = $modelProfiles->find($profile_id)['profile_img_ava'];
+
+			$commentList[$key]['posterName'] = $posterName;
+			$commentList[$key]['posterAvatar'] = $posterAvatar;
+
+			$commentList[$key]['replyList'] = $modelMediaComment->where(['parent_id' => $commentList[$key]])->findAll();
+			foreach( $commentList[$key]['replyList'] as $idx => $reply ) {
+				$app_user_id = $reply['app_user_id'];
+				$profile_id = $modelAppUserRels->where(['app_user_id' => $app_user_id])->first()['profile_id'];
+				$posterName = $modelAppUser->find($app_user_id)['app_user_name'];
+				$posterAvatar = $modelProfiles->find($profile_id)['profile_img_ava'];
+
+				$commentList[$key]['replyList'][$idx]['posterName'] = $posterName;
+				$commentList[$key]['replyList'][$idx]['posterAvatar'] = $posterAvatar;
+			}
+		}
 		return $this->response->setStatusCode(202)->setJSON(['commentList' => $commentList]);
 	}
 
@@ -581,6 +661,37 @@ class Profiles extends BaseController
 
 		$postData = $this->request->getPost();
 		$app_user_id = $postData['app_user_id'];
+		$notifications = $modelClubInvitations->where(['app_user_id' => $app_user_id])->findAll();
+		foreach( $notifications as $key => $notification ) {
+			$notifications[$key]['club_name'] = $modelClubs->where(['club_id' => $notification['club_id']])->first()['club_name'];
+			$notifications[$key]['type'] = 'club_invitation';
+		}
+
+		$temp = $modelNotification->where(['app_user_id' => $app_user_id, 'read' => '0'])->orderBy('created_at', 'desc')->findAll();
+		foreach( $temp as $key => $tmp ) {
+			$tmp['type'] = 'notify';
+			array_push($notifications, $tmp);
+		}
+
+		return $this->response->setStatusCode(202)->setJSON(['notifications' => $notifications]);
+	}
+
+	public function close_notification() {
+		$oauth = new Oauth();
+		$request = new Request();
+		$modelClubs = new ClubsModel;
+		$modelClubInvitations = new ClubInvitationsModel;
+		$modelNotification = new NotificationModel;
+
+		$postData = $this->request->getPost();
+		$notification_id = $postData['notification_id'];
+
+		$modelNotification->where(['id' => $notification_id])
+							->set(['read' => '1'])
+							->update();
+
+		$app_user_id = $modelNotification->find($notification_id)['app_user_id'];
+
 		$notifications = $modelClubInvitations->where(['app_user_id' => $app_user_id])->findAll();
 		foreach( $notifications as $key => $notification ) {
 			$notifications[$key]['club_name'] = $modelClubs->where(['club_id' => $notification['club_id']])->first()['club_name'];

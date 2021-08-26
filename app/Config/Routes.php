@@ -93,8 +93,11 @@ $routes->post('api/profile/comment_feed', 'Profiles::comment_feed');
 $routes->post('api/profile/add_comment', 'Profiles::add_comment_feed');
 $routes->post('api/profile/delete_comment', 'Profiles::delete_comment_feed');
 $routes->post('api/profile/delete_feed', 'Profiles::delete_feed');
+$routes->post('api/profile/reply_comment', 'Profiles::reply_comment');
 
+$routes->post('api/profile/close_notification', 'Profiles::close_notification');
 $routes->post('api/profile/get_notification', 'Profiles::get_notification');
+
 // Clubs
 $routes->post('api/profile/get_clubs', 'Clubs::get_clubs');
 $routes->post('api/profile/add_club', 'Clubs::add_club');

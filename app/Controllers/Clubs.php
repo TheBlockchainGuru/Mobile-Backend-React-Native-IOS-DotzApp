@@ -11,6 +11,7 @@ use App\Models\Profile_relsModel;
 use App\Models\ClubInvitationsModel;
 use \App\Libraries\Oauth;
 use \OAuth2\Request;
+use App\Models\NotificationModel;
 
 class Clubs extends BaseController
 {
@@ -296,6 +297,7 @@ class Clubs extends BaseController
 		$modelClubs = new ClubsModel;
 		$modelClubInvitations = new ClubInvitationsModel;
 		$modelClubUsers = new ClubUsersModel;
+		$modelNotification = new NotificationModel;
 
 		$postData = $this->request->getPost();
 		$invitation_id = $postData['notification_id'];
@@ -316,6 +318,13 @@ class Clubs extends BaseController
 		$notifications = $modelClubInvitations->where(['app_user_id' => $app_user_id])->findAll();
 		foreach( $notifications as $key => $notification ) {
 			$notifications[$key]['club_name'] = $modelClubs->where(['club_id' => $notification['club_id']])->first()['club_name'];
+			$notifications[$key]['type'] = 'club_invitation';
+		}
+
+		$temp = $modelNotification->where(['app_user_id' => $app_user_id, 'read' => '0'])->orderBy('created_at', 'desc')->findAll();
+		foreach( $temp as $key => $tmp ) {
+			$tmp['type'] = 'notify';
+			array_push($notifications, $tmp);
 		}
 
 		return $this->response->setStatusCode(202)->setJSON(['notifications' => $notifications, 'message' => $message]);
