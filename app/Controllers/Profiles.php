@@ -540,7 +540,7 @@ class Profiles extends BaseController
 		
 		$modelMediaComment->insert(['app_user_id' => $app_user_id, 'user_media_id' => $user_media_id, 'comment' => $comment, 'parent_id' => $parent_id]);
 
-		$commentList = $modelMediaComment->where(['user_media_id' => $user_media_id])->findAll();
+		$commentList = $modelMediaComment->where(['user_media_id' => $user_media_id, 'parent_id' => '0'])->findAll();
 		return $this->response->setStatusCode(202)->setJSON(['success' => true, 'commentList' => $commentList]);
 	}
 
@@ -558,7 +558,7 @@ class Profiles extends BaseController
 
 		$modelMediaComment->where(['id' => $comment_id])->delete();
 
-		$commentList = $modelMediaComment->where(['user_media_id' => $user_media_id])->findAll();
+		$commentList = $modelMediaComment->where(['user_media_id' => $user_media_id, 'parent_id' => '0'])->findAll();
 
 		foreach( $commentList as $key => $comment ) {
 			$app_user_id = $comment['app_user_id'];
@@ -595,7 +595,7 @@ class Profiles extends BaseController
 		$parent_id = $postData['parent_id'];
 		$comment = $postData['content'];
 		$app_user_id = $postData['app_user_id'];
-		$user_media_id = $modelMediaComment->find($parent_id)['id'];
+		$user_media_id = $modelMediaComment->find($parent_id)['user_media_id'];
 
 		$modelMediaComment->insert(['app_user_id' => $app_user_id, 'user_media_id' => $user_media_id, 'comment' => $comment, 'parent_id' => $parent_id]);
 
