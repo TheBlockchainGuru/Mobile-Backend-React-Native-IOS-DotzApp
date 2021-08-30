@@ -258,30 +258,14 @@ class Profiles extends BaseController
 		if (isset($update_data['activity_ids'])) {
 			$update_Prof_act_rels = [];
 			$activity_ids = json_decode($update_data['activity_ids']);
-			$act_rels = $modelProf_act_rels->where( ['profile_id' => $profile_id] )->findAll();
-			if ( count($activity_ids) === count($act_rels) ) {
-				foreach ($activity_ids as $key => $activity_id) {
-					if ($modelProf_act_rels->update($act_rels[$key]['prof_act_id'], ['activity_id'=>$activity_id])) $update_Prof_act_rels[] = $activity_id;
-				}
-			} else if ( count($activity_ids) > count($act_rels) ) {
-				foreach ($act_rels as $key => $act_rel) {
-					if ($modelProf_act_rels->update($act_rel['prof_act_id'], ['activity_id'=>$activity_ids[$key]])) $update_Prof_act_rels[] = $activity_ids[$key];
-					array_splice($activity_ids, $key, 1);
-				}
-				foreach ($activity_ids as $activity_id) {
-					$update_Prof_act_rels[] = $modelProf_act_rels->insert(['profile_id'=>$profile_id,'activity_id'=>$activity_id]);
-				}
-			} else if ( count($activity_ids) < count($act_rels) ) {
-				foreach ($act_rels as $key => $act_rel) {
-					while (count($activity_ids) > 0) {
-						if ($modelProf_act_rels->update($act_rel['prof_act_id'], ['activity_id'=>$activity_ids[$key]])) $update_Prof_act_rels[] = $activity_ids[$key];
-						array_splice($activity_ids, $key, 1);
-					}
-					if (count($activity_ids) == 0) {
-						if ($modelProf_act_rels->update($act_rel['prof_act_id'], ['activity_id'=>NULL])) $update_Prof_act_rels[] = NULL;
-					}
-				}
+
+			$modelProf_act_rels->where(['profile_id' => $profile_id])->delete();
+
+			foreach( $activity_ids as $key => $activity_id ) {
+				$modelProf_act_rels->insert(['profile_id' => $profile_id, 'activity_id' => $activity_id]);
 			}
+
+			$update_Prof_act_rels = $modelProf_act_rels->where(['profile_id' => $profile_id])->findAll();
 
 			foreach ($update_Prof_act_rels as $value) $success_data['activity_ids'][] = $value;
 		}
