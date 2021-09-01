@@ -551,6 +551,7 @@ class Profiles extends BaseController
 		$modelAppUser = new AppUserModel;
 		$modelAppUserRels = new AppUserRelsModel;
 		$modelProfiles = new ProfilesModel;
+		$modelProf_act_rels = new Prof_act_relsModel;
 
 		$postData = $this->request->getPost();
 		$comment_id = $postData['comment_id'];
@@ -570,6 +571,14 @@ class Profiles extends BaseController
 			$commentList[$key]['posterName'] = $posterName;
 			$commentList[$key]['posterAvatar'] = $posterAvatar;
 
+			$commentList[$key]['poster'] = [];
+			$commentList[$key]['poster']['activities'] = $modelProf_act_rels->where(['profile_id' => $profile_id])->findAll();
+			$commentList[$key]['poster']['app_user_id'] = $app_user_id;
+			$commentList[$key]['poster']['app_user_name'] = $posterName;
+			$commentList[$key]['poster']['posts'] = [];
+			$commentList[$key]['poster']['profile_rel_status'] = "friends";
+			$commentList[$key]['poster']['profile'] = $modelProfiles->find($profile_id);
+
 			$commentList[$key]['replyList'] = $modelMediaComment->where(['parent_id' => $commentList[$key]['id']])->findAll();
 			foreach( $commentList[$key]['replyList'] as $idx => $reply ) {
 				$app_user_id = $reply['app_user_id'];
@@ -579,6 +588,14 @@ class Profiles extends BaseController
 
 				$commentList[$key]['replyList'][$idx]['posterName'] = $posterName;
 				$commentList[$key]['replyList'][$idx]['posterAvatar'] = $posterAvatar;
+
+				$commentList[$key]['replyList'][$idx]['poster'] = [];
+				$commentList[$key]['replyList'][$idx]['poster']['activities'] = $modelProf_act_rels->where(['profile_id' => $profile_id])->findAll();
+				$commentList[$key]['replyList'][$idx]['poster']['app_user_id'] = $app_user_id;
+				$commentList[$key]['replyList'][$idx]['poster']['app_user_name'] = $posterName;
+				$commentList[$key]['replyList'][$idx]['poster']['posts'] = [];
+				$commentList[$key]['replyList'][$idx]['poster']['profile_rel_status'] = "friends";
+				$commentList[$key]['replyList'][$idx]['poster']['profile'] = $modelProfiles->find($profile_id);
 			}
 		}
 		return $this->response->setStatusCode(202)->setJSON(['commentList' => $commentList]);
@@ -591,6 +608,7 @@ class Profiles extends BaseController
 		$modelAppUserRels = new AppUserRelsModel;
 		$modelProfiles = new ProfilesModel;
 		$modelNotification = new NotificationModel;
+		$modelProf_act_rels = new Prof_act_relsModel;
 		
 		$postData = $this->request->getPost();
 		$parent_id = $postData['parent_id'];
@@ -615,6 +633,14 @@ class Profiles extends BaseController
 			$commentList[$key]['posterName'] = $posterName;
 			$commentList[$key]['posterAvatar'] = $posterAvatar;
 
+			$commentList[$key]['poster'] = [];
+			$commentList[$key]['poster']['activities'] = $modelProf_act_rels->where(['profile_id' => $profile_id])->findAll();
+			$commentList[$key]['poster']['app_user_id'] = $app_user_id;
+			$commentList[$key]['poster']['app_user_name'] = $posterName;
+			$commentList[$key]['poster']['posts'] = [];
+			$commentList[$key]['poster']['profile_rel_status'] = "friends";
+			$commentList[$key]['poster']['profile'] = $modelProfiles->find($profile_id);
+
 			$commentList[$key]['replyList'] = $modelMediaComment->where(['parent_id' => $commentList[$key]['id']])->findAll();
 			foreach( $commentList[$key]['replyList'] as $idx => $reply ) {
 				$app_user_id = $reply['app_user_id'];
@@ -624,6 +650,14 @@ class Profiles extends BaseController
 
 				$commentList[$key]['replyList'][$idx]['posterName'] = $posterName;
 				$commentList[$key]['replyList'][$idx]['posterAvatar'] = $posterAvatar;
+				
+				$commentList[$key]['replyList'][$idx]['poster'] = [];
+				$commentList[$key]['replyList'][$idx]['poster']['activities'] = $modelProf_act_rels->where(['profile_id' => $profile_id])->findAll();
+				$commentList[$key]['replyList'][$idx]['poster']['app_user_id'] = $app_user_id;
+				$commentList[$key]['replyList'][$idx]['poster']['app_user_name'] = $posterName;
+				$commentList[$key]['replyList'][$idx]['poster']['posts'] = [];
+				$commentList[$key]['replyList'][$idx]['poster']['profile_rel_status'] = "friends";
+				$commentList[$key]['replyList'][$idx]['poster']['profile'] = $modelProfiles->find($profile_id);
 			}
 		}
 		return $this->response->setStatusCode(202)->setJSON(['commentList' => $commentList]);
