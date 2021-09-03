@@ -234,16 +234,17 @@ class Profiles extends BaseController
 		}
 		if (!$app_user && empty($app_user)) return $this->response->setStatusCode(400)->setJSON(["error"=>"app_user not found or empty.",'app_user'=>$app_user]);
 
-		echo $username; exit;
-		if( $modelAppUser->where(['app_user_name' => $username])->first() ) {
-			return $this->response->setStatusCode(202)->setJSON(["error"=>"You have entered a duplicate Username!"]);
-		}
-
 		$appUserRel = $modelAppUserRels->where(['app_user_id'=>$app_user['app_user_id']])->find();
 		if (!$appUserRel && empty($appUserRel)) return $this->response->setStatusCode(400)->setJSON(["error"=>"wrong or empty id."]);
 		$profile_id = $appUserRel[0]['profile_id'];
 
 		$update_data = $this->request->getPost();
+
+		echo $modelAppUser->where(['app_user_name' => $update_data['app_user_name']])->first(); exit;
+		if( $modelAppUser->where(['app_user_name' => $update_data['app_user_name']])->first() ) {
+			return $this->response->setStatusCode(202)->setJSON(["error"=>"You have entered a duplicate Username!"]);
+		}
+
 		// return $this->response->setStatusCode(400)->setJSON(["error"=>$update_data]);
 		if (isset($update_data['app_user_name'])) {
 			$app_user_name_update = $modelAppUser->update($app_user['app_user_id'],['app_user_name'=>$update_data['app_user_name']]);
