@@ -177,6 +177,7 @@ class AppUser extends BaseController
                 'email' => $email,
                 'password' => $password,
 				'app_user_name' => $this->request->getVar('name'),
+				'bio' => $this->request->getVar('bio'),
 				'scope' => $scope
 			];
 
