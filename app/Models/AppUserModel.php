@@ -8,7 +8,7 @@ class AppUserModel extends Model{
     
   protected $useSoftDeletes = true;
 
-  protected $allowedFields = ['email','password','app_user_name','scope', 'authorisation', 'Date_of_Birth', 'Veh_size', 'Veh_year', 'Veh_photo', 'cors_current'];
+  protected $allowedFields = ['email','password','app_user_name', 'bio', 'scope', 'authorisation', 'Date_of_Birth', 'Veh_size', 'Veh_year', 'Veh_photo', 'cors_current'];
   protected $beforeInsert = ['beforeInsert'];
   protected $beforeUpdate = ['beforeUpdate'];
 
