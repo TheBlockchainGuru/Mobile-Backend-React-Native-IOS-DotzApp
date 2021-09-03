@@ -234,6 +234,7 @@ class Profiles extends BaseController
 		}
 		if (!$app_user && empty($app_user)) return $this->response->setStatusCode(400)->setJSON(["error"=>"app_user not found or empty.",'app_user'=>$app_user]);
 
+		echo $username; exit;
 		if( $modelAppUser->where(['app_user_name' => $username])->first() ) {
 			return $this->response->setStatusCode(202)->setJSON(["error"=>"You have entered a duplicate Username!"]);
 		}
