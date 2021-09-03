@@ -172,6 +172,7 @@ class AppUser extends BaseController
 			}
 			$img_name = $img ? $img->getClientName() : null;
 
+			echo 1; exit;
 			// AppUser
 			$data = [
                 'email' => $email,
