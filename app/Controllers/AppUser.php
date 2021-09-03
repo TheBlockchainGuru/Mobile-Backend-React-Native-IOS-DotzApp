@@ -172,7 +172,6 @@ class AppUser extends BaseController
 			}
 			$img_name = $img ? $img->getClientName() : null;
 
-			return $this->response->setStatusCode(202)->setJSON([ "error"=> $this->request->getVar('bio') ]);
 			// AppUser
 			$data = [
                 'email' => $email,
