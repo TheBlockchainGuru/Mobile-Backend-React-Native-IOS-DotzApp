@@ -240,7 +240,7 @@ class Profiles extends BaseController
 
 		$update_data = $this->request->getPost();
 
-		if( $modelAppUser->where(['app_user_name' => $update_data['app_user_name']])->first() ) {
+		if( $app_user['app_user_name'] != $update_data['app_user_name'] && $modelAppUser->where(['app_user_name' => $update_data['app_user_name']])->first() ) {
 			return $this->response->setStatusCode(202)->setJSON(["error"=>"You have entered a duplicate Username!"]);
 		}
 
