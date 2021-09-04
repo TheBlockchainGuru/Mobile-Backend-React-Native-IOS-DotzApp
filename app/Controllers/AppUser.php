@@ -58,9 +58,9 @@ class AppUser extends BaseController
 		$body = $respond->getResponseBody();
 		$body = json_decode($respond->getResponseBody());
 
-		$app_user = $model_appusers->where('email', $this->request->getVar('username'))->select(['app_user_id','email','app_user_name','scope'])->first();
+		$app_user = $model_appusers->where('email', $this->request->getVar('username'))->select(['app_user_id','email','app_user_name','bio','scope'])->first();
 		if ($app_user === NULL) {
-			if ($app_user = $model_appusers->where('email', $this->request->getVar('username'))->select(['app_user_id','email','app_user_name','scope','deleted_at'])->withDeleted()->find()) {
+			if ($app_user = $model_appusers->where('email', $this->request->getVar('username'))->select(['app_user_id','email','app_user_name','bio','scope','deleted_at'])->withDeleted()->find()) {
 				return $this->response->setStatusCode(400)->setJSON(["error"=>"app_user is deleted",'app_user'=>$app_user]);
 			} else return $this->response->setStatusCode(400)->setJSON(["error"=>"app_user returns null",'app_user'=>$app_user]);
 		}
@@ -76,6 +76,7 @@ class AppUser extends BaseController
 			foreach ($AppUsers as $app_user_friend) {
 				if ( $friend['app_user_id'] == $app_user_friend['app_user_id'] ) {
 					$friends[$friend_key]['app_user_name'] = $app_user_friend['app_user_name'];
+					$friends[$friend_key]['bio'] = $app_user_friend['bio'];
 					$friends[$friend_key]['profile'] = $modelProfiles->getByAppUserId($app_user_friend['app_user_id']);
 					$act_rels = $modelProf_act_rels->where( ['profile_id' => $profile['profile_id']] )->select(['activity_id'])->findAll();
 					$friends[$friend_key]['activities'] = [];

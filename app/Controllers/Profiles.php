@@ -500,6 +500,7 @@ class Profiles extends BaseController
 			$commentList[$key]['poster']['activities'] = $modelProf_act_rels->where(['profile_id' => $profile_id])->findAll();
 			$commentList[$key]['poster']['app_user_id'] = $app_user_id;
 			$commentList[$key]['poster']['app_user_name'] = $posterName;
+			$commentList[$key]['poster']['bio'] = $modelAppUser->find($app_user_id)['bio'];
 			$commentList[$key]['poster']['posts'] = [];
 			$commentList[$key]['poster']['profile_rel_status'] = "friends";
 			$commentList[$key]['poster']['profile'] = $modelProfiles->find($profile_id);
@@ -518,6 +519,7 @@ class Profiles extends BaseController
 				$commentList[$key]['replyList'][$idx]['poster']['activities'] = $modelProf_act_rels->where(['profile_id' => $profile_id])->findAll();
 				$commentList[$key]['replyList'][$idx]['poster']['app_user_id'] = $app_user_id;
 				$commentList[$key]['replyList'][$idx]['poster']['app_user_name'] = $posterName;
+				$commentList[$key]['replyList'][$idx]['poster']['bio'] = $modelAppUser->find($app_user_id)['bio'];
 				$commentList[$key]['replyList'][$idx]['poster']['posts'] = [];
 				$commentList[$key]['replyList'][$idx]['poster']['profile_rel_status'] = "friends";
 				$commentList[$key]['replyList'][$idx]['poster']['profile'] = $modelProfiles->find($profile_id);
@@ -580,6 +582,7 @@ class Profiles extends BaseController
 			$commentList[$key]['poster']['activities'] = $modelProf_act_rels->where(['profile_id' => $profile_id])->findAll();
 			$commentList[$key]['poster']['app_user_id'] = $app_user_id;
 			$commentList[$key]['poster']['app_user_name'] = $posterName;
+			$commentList[$key]['poster']['bio'] = $modelAppUser->find($app_user_id)['bio'];
 			$commentList[$key]['poster']['posts'] = [];
 			$commentList[$key]['poster']['profile_rel_status'] = "friends";
 			$commentList[$key]['poster']['profile'] = $modelProfiles->find($profile_id);
@@ -598,6 +601,7 @@ class Profiles extends BaseController
 				$commentList[$key]['replyList'][$idx]['poster']['activities'] = $modelProf_act_rels->where(['profile_id' => $profile_id])->findAll();
 				$commentList[$key]['replyList'][$idx]['poster']['app_user_id'] = $app_user_id;
 				$commentList[$key]['replyList'][$idx]['poster']['app_user_name'] = $posterName;
+				$commentList[$key]['replyList'][$idx]['poster']['bio'] = $modelAppUser->find($app_user_id)['bio'];
 				$commentList[$key]['replyList'][$idx]['poster']['posts'] = [];
 				$commentList[$key]['replyList'][$idx]['poster']['profile_rel_status'] = "friends";
 				$commentList[$key]['replyList'][$idx]['poster']['profile'] = $modelProfiles->find($profile_id);
@@ -642,6 +646,7 @@ class Profiles extends BaseController
 			$commentList[$key]['poster']['activities'] = $modelProf_act_rels->where(['profile_id' => $profile_id])->findAll();
 			$commentList[$key]['poster']['app_user_id'] = $app_user_id;
 			$commentList[$key]['poster']['app_user_name'] = $posterName;
+			$commentList[$key]['poster']['bio'] = $modelAppUser->find($app_user_id)['bio'];
 			$commentList[$key]['poster']['posts'] = [];
 			$commentList[$key]['poster']['profile_rel_status'] = "friends";
 			$commentList[$key]['poster']['profile'] = $modelProfiles->find($profile_id);
@@ -660,6 +665,7 @@ class Profiles extends BaseController
 				$commentList[$key]['replyList'][$idx]['poster']['activities'] = $modelProf_act_rels->where(['profile_id' => $profile_id])->findAll();
 				$commentList[$key]['replyList'][$idx]['poster']['app_user_id'] = $app_user_id;
 				$commentList[$key]['replyList'][$idx]['poster']['app_user_name'] = $posterName;
+				$commentList[$key]['replyList'][$idx]['poster']['bio'] = $modelAppUser->find($app_user_id)['bio'];
 				$commentList[$key]['replyList'][$idx]['poster']['posts'] = [];
 				$commentList[$key]['replyList'][$idx]['poster']['profile_rel_status'] = "friends";
 				$commentList[$key]['replyList'][$idx]['poster']['profile'] = $modelProfiles->find($profile_id);
