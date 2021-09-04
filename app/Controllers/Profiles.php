@@ -251,6 +251,11 @@ class Profiles extends BaseController
 			else $success_data['app_user_name'] = $update_data['app_user_name'];
 		}
 
+		if( isset($update_data['bio']) ) {
+			$bio_update = $modelAppUser->update($app_user['app_user_id'], ['bio' => $update_data['bio']]);
+			$success_data['bio'] = $update_data['bio'];
+		}
+
 		if ( isset($update_data['profile_city']) || isset($update_data['profile_privacy_buble']) || isset($update_data['profile_current_act']) ) {
 			if(isset($update_data['profile_city'])) $data['profile_city'] = $update_data['profile_city'];
 			if(isset($update_data['profile_privacy_buble'])) $data['profile_privacy_buble'] = $update_data['profile_privacy_buble'];
