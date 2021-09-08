@@ -135,11 +135,8 @@ class Profiles extends BaseController
 				return $this->response->setStatusCode(400)->setJSON(["error"=>"Such location not found.", 'favourite_loc'=>$favourite_loc, 'locs'=>$locs]);
 		}
 
-		if ( $modelProfiles->update($appUserRel[0]['profile_id'], ['profile_favourite_locs'=>json_encode($favourite_locs)]) ) {
-			return $this->response->setStatusCode(202)->setJSON(['success'=>'Profile favourite locations updated.']);
-		} else {
-			return $this->response->setStatusCode(400)->setJSON(["error"=>"DataBase failed to update."]);
-		}
+		$modelProfiles->update($appUserRel[0]['profile_id'], ['profile_favourite_locs'=>json_encode($favourite_locs)]);
+		return $this->response->setStatusCode(202)->setJSON(['success'=>'Profile favourite locations updated.']);
 	}
 
 	public function update_miles()
