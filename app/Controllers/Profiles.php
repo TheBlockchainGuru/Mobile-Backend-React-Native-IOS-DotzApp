@@ -125,10 +125,10 @@ class Profiles extends BaseController
 		$app_user = $oauth->server->getAccessTokenData($request);
 		$appUserRel = $modelAppUserRels->where(['app_user_id'=>$app_user['user_id']])->find();
 		if (!$appUserRel && empty($appUserRel)) return $this->response->setStatusCode(400)->setJSON(["error"=>"wrong or empty id."]);
-		return $this->response->setStatusCode(202)->setJSON(['success'=>'1']);
+		
 		$favourite_locs = json_decode($this->request->getVar('favourite_locs'));
 		if (!$favourite_locs) return $this->response->setStatusCode(400)->setJSON(["error"=>"favourite_locs not provided."]);
-		// echo 1; exit;
+		return $this->response->setStatusCode(202)->setJSON(['success'=>'1']);
 		$locs = $modelLocations->findAll();
 		foreach ($favourite_locs as $favourite_loc) {
 			if (!in_array($favourite_loc, array_column($locs, 'loc_id'))) 
