@@ -128,7 +128,7 @@ class Profiles extends BaseController
 
 		$favourite_locs = json_decode($this->request->getVar('favourite_locs'));
 		if (!$favourite_locs) return $this->response->setStatusCode(400)->setJSON(["error"=>"favourite_locs not provided."]);
-
+		echo 1; exit;
 		$locs = $modelLocations->findAll();
 		foreach ($favourite_locs as $favourite_loc) {
 			if (!in_array($favourite_loc, array_column($locs, 'loc_id'))) 
