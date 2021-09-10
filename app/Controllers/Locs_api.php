@@ -180,14 +180,14 @@ class Locs_api extends ResourceController
 				$modelUserRecord->insert($data);
 
 				$loc_records = $modelUserRecord->where(['app_user_id' => $this->request->getVar('app_user_id')])->findAll();
-				
+				echo 1; exit;
 				foreach( $loc_records as $key => $loc_record ) {
 					$loc_name = 'No name';
 					if( $modelLocations->find( $loc_record['location_id'] ) != null )
 						$loc_name = $modelLocations->find( $loc_record['location_id'] )['loc_title'];
-					$loc_record[$key]['loc_name'] = $loc_name;
+					$loc_records[$key]['loc_name'] = $loc_name;
 				}
-				
+
 				return $this->response->setStatusCode(202)->setJSON(['loc_records' => ($loc_records)]);
 			} else {
 				return $this->response->setStatusCode(400)->setJSON(["error"=>"No loc_id or new_record provided."]);
