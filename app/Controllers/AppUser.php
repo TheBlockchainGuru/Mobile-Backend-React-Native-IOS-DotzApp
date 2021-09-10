@@ -115,9 +115,10 @@ class AppUser extends BaseController
 
 		$profile['loc_records'] = $modelUserRecord->where(['app_user_id' => $app_user['app_user_id']])->findAll();
 		foreach( $profile['loc_records'] as $key => $loc_record ) {
-			$loc_name = $modelLocations->find( $loc_record['location_id'] )['loc_title'];
+			$loc_name = 'No name';
+			if( $modelLocations->find( $loc_record['location_id'] ) != null )
+				$loc_name = $modelLocations->find( $loc_record['location_id'] )['loc_title'];
 			$profile['loc_records'][$key]['loc_name'] = $loc_name;
-			$profile['loc_records'][$key]['user_routes'] = json_decode($profile['loc_records'][$key]['user_routes']);
 		}
 
 		$body->app_user = $app_user;

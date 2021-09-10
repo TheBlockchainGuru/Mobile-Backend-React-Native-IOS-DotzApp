@@ -175,7 +175,7 @@ class Locs_api extends ResourceController
 				$modelUserRecord = new UserRecordModel;
 				$data = [];
 				$data['app_user_id'] = $this->request->getVar('app_user_id');
-				$data['user_routes'] = json_encode($this->request->getVar('userRoutes'));
+				$data['user_routes'] = $this->request->getVar('userRoutes');
 				$data['location_id'] = $this->request->getVar('loc_id');
 				$data['distance'] = $this->request->getVar('distance');
 				$data['pace'] = $this->request->getVar('pace');
