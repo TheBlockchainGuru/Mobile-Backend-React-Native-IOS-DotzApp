@@ -186,7 +186,7 @@ class Locs_api extends ResourceController
 						$loc_name = $modelLocations->find( $loc_record['location_id'] )['loc_title'];
 					$loc_records[$key]['loc_name'] = $loc_name;
 				}
-
+echo 1; exit;
 				return $this->response->setStatusCode(202)->setJSON(['loc_records' => ($loc_records)]);
 			} else {
 				return $this->response->setStatusCode(400)->setJSON(["error"=>"No loc_id or new_record provided."]);
