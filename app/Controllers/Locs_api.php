@@ -13,6 +13,7 @@ use App\Models\ProfilesPostsComments;
 use App\Models\Profile_relsModel;
 use App\Models\Prof_act_relsModel;
 use App\Models\UserRecordModel;
+use App\Models\LocationsModel;
 
 class Locs_api extends ResourceController
 {
