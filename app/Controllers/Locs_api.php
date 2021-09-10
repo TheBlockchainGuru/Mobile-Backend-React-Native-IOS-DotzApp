@@ -163,9 +163,6 @@ class Locs_api extends ResourceController
 						if (!$updateHappened) return $this->response->setStatusCode(400)->setJSON(["error"=>"DataBase failed to update."]);
 					}
 
-					if (!$updateHappened) {
-						return $this->response->setStatusCode(200)->setJSON( ['success' => 'Record '.$new_record.' hasn\'t beaten current records.', 'records'=>json_encode( $records )] );
-					}
 				} else {
 					$loc_records = [['time' => $new_record, 'app_user_id' => $app_user['app_user_id'], 'app_user_name' => $app_user['app_user_name'], 'profile_img_ava' => $profile['profile_img_ava']]];
 					$updateHappened = $this->model->update($loc_id, [ 'loc_records'=>json_encode( $loc_records ) ]);
@@ -189,7 +186,6 @@ class Locs_api extends ResourceController
 						$loc_name = $modelLocations->find( $loc_record['location_id'] )['loc_title'];
 					$loc_records[$key]['loc_name'] = $loc_name;
 				}
-
 
 				return $this->response->setStatusCode(202)->setJSON(['loc_records' => ($loc_records)]);
 			} else {
