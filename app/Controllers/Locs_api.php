@@ -170,6 +170,8 @@ class Locs_api extends ResourceController
 				
 				// TODO: add User Record
 				$modelUserRecord = new UserRecordModel;
+				$modelLocations = new LocationsModel;
+
 				$data = [];
 				$data['app_user_id'] = $this->request->getVar('app_user_id');
 				$data['user_routes'] = $this->request->getVar('userRoutes');
@@ -180,12 +182,11 @@ class Locs_api extends ResourceController
 				$modelUserRecord->insert($data);
 
 				$loc_records = $modelUserRecord->where(['app_user_id' => $this->request->getVar('app_user_id')])->findAll();
-				// echo 1; exit;
+				
 				foreach( $loc_records as $key => $loc_record ) {
 					$loc_name = 'No name';
 					if( $modelLocations->find( $loc_record['location_id'] ) != null )
 						$loc_name = $modelLocations->find( $loc_record['location_id'] )['loc_title'];
-					echo 1; exit;
 					$loc_records[$key]['loc_name'] = $loc_name;
 				}
 
