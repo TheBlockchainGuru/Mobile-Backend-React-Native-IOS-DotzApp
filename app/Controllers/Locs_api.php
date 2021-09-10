@@ -183,9 +183,9 @@ class Locs_api extends ResourceController
 				// echo 1; exit;
 				foreach( $loc_records as $key => $loc_record ) {
 					$loc_name = 'No name';
-					echo 1; exit;
 					if( $modelLocations->find( $loc_record['location_id'] ) != null )
 						$loc_name = $modelLocations->find( $loc_record['location_id'] )['loc_title'];
+					echo 1; exit;
 					$loc_records[$key]['loc_name'] = $loc_name;
 				}
 
