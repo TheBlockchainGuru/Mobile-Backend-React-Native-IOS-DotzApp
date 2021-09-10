@@ -12,6 +12,7 @@ use App\Models\ProfilesPostsModel;
 use App\Models\ProfilesPostsComments;
 use App\Models\Profile_relsModel;
 use App\Models\Prof_act_relsModel;
+use App\Models\UserRecordModel;
 
 class Locs_api extends ResourceController
 {
@@ -123,6 +124,7 @@ class Locs_api extends ResourceController
         {
 			$modelAppUser = new AppUserModel;
 			$modelProfiles = new ProfilesModel;
+
 			$app_user = $this->oauth->server->getAccessTokenData($this->request_oauth);
 			$loc_id = $this->request->getVar('loc_id');
 			$new_record = $this->request->getVar('loc_record');
@@ -169,6 +171,17 @@ class Locs_api extends ResourceController
 					$updateHappened = $this->model->update($loc_id, [ 'loc_records'=>json_encode( $loc_records ) ]);
 				}
 				
+				// TODO: add User Record
+				$modelUserRecord = new UserRecordModel;
+				$data = [];
+				$data['app_user_id'] = $this->request->getVar('app_user_id');
+				$data['user_routes'] = json_encode($this->request->getVar('userRoutes'));
+				$data['location_id'] = $this->request->getVar('loc_id');
+				$data['distance'] = $this->request->getVar('distance');
+				$data['pace'] = $this->request->getVar('pace');
+				$data['time'] = $this->request->getVar('loc_record');
+				$modelUserRecord->insert($data);
+
 				return $this->response->setStatusCode(202)->setJSON(['success' => $updateHappened && isset($records) ? $records : $loc_records]);
 			} else {
 				return $this->response->setStatusCode(400)->setJSON(["error"=>"No loc_id or new_record provided."]);

@@ -11,6 +11,8 @@ use App\Models\Prof_act_relsModel;
 use App\Models\ActivitiesModel;
 use App\Models\ProfilesPostsModel;
 use App\Models\ProfilesPostsComments;
+use App\Models\UserRecordModel;
+use App\Models\LocationsModel;
 
 class AppUser extends BaseController
 {
@@ -52,6 +54,8 @@ class AppUser extends BaseController
 		$modelActivities = new ActivitiesModel;
 		$modelProfilesPosts = new ProfilesPostsModel;
 		$modelProfilesPostsComments = new ProfilesPostsComments;
+		$modelUserRecord = new UserRecordModel;
+		$modelLocations = new LocationsModel;
 		$AppUsers = $model_appusers->findAll();
 		$Activities = $modelActivities->findAll();
 		$allComments = $modelProfilesPostsComments->findAll();
@@ -107,6 +111,13 @@ class AppUser extends BaseController
 					$profile['posts'][$key]['comments'][] = $comment;
 				}
 			}
+		}
+
+		$profile['loc_records'] = $modelUserRecord->where(['app_user_id' => $app_user['app_user_id']])->findAll();
+		foreach( $profile['loc_records'] as $key => $loc_record ) {
+			$loc_name = $modelLocations->find( $loc_record['location_id'] )['loc_title'];
+			$profile['loc_records'][$key]['loc_name'] = $loc_name;
+			$profile['loc_records'][$key]['user_routes'] = json_decode($profile['loc_records'][$key]['user_routes']);
 		}
 
 		$body->app_user = $app_user;
