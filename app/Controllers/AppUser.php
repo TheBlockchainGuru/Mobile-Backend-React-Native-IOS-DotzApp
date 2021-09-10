@@ -93,6 +93,17 @@ class AppUser extends BaseController
 							}
 						}
 					}
+
+					$loc_records = $modelUserRecord->where([ 'app_user_id' => $app_user_friend['app_user_id'] ])->findAll();
+				
+					foreach( $loc_records as $key => $loc_record ) {
+						$loc_name = 'No name';
+						if( $modelLocations->find( $loc_record['location_id'] ) != null )
+							$loc_name = $modelLocations->find( $loc_record['location_id'] )['loc_title'];
+						$loc_records[$key]['loc_name'] = $loc_name;
+					}
+
+					$friends[$friend_key]['loc_records'] = $loc_records;
 				}
 			}
 		}
