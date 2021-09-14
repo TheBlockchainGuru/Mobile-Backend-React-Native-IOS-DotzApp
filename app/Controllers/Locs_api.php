@@ -180,6 +180,7 @@ class Locs_api extends ResourceController
 				$data['distance'] = $this->request->getVar('distance');
 				$data['pace'] = $this->request->getVar('pace');
 				$data['time'] = $this->request->getVar('loc_record');
+				$data['created_at'] = $this->request->getVar('created_at');
 				$modelUserRecord->insert($data);
 
 				$loc_records = $modelUserRecord->where(['app_user_id' => $this->request->getVar('app_user_id')])->findAll();
