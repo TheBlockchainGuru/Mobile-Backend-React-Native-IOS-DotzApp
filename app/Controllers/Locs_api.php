@@ -262,28 +262,33 @@ class Locs_api extends ResourceController
 				$modelAc_loc_rels->insert([ 'activity_id' => $activity_id, 'loc_id' => $loc_p_id ]);
 
 				// TODO: add User Record
-				$modelUserRecord = new UserRecordModel;
-				$modelLocations = new LocationsModel;
-
-				$data = [];
-				$data['app_user_id'] = $this->request->getVar('app_user_id');
-				$data['user_routes'] = $this->request->getVar('userRoutes');
-				$data['location_id'] = $loc_p_id;
-				$data['distance'] = $this->request->getVar('distance');
-				$data['pace'] = $this->request->getVar('pace');
-				$data['time'] = $this->request->getVar('loc_record');
-				$data['created_at'] = $this->request->getVar('created_at');
-				$modelUserRecord->insert($data);
-
-				$loc_records = $modelUserRecord->where(['app_user_id' => $this->request->getVar('app_user_id')])->findAll();
-
-				foreach( $loc_records as $key => $loc_record ) {
-					$loc_name = 'No name';
-					if( $modelLocations->find( $loc_record['location_id'] ) != null )
-						$loc_name = $modelLocations->find( $loc_record['location_id'] )['loc_title'];
-					$loc_records[$key]['loc_name'] = $loc_name;
+				$type = $this->request->getVar('type');
+				if( $type != 'gpsRoute' )
+					return $this->response->setStatusCode(202)->setJSON(['success' => true]);
+				else {
+					$modelUserRecord = new UserRecordModel;
+					$modelLocations = new LocationsModel;
+	
+					$data = [];
+					$data['app_user_id'] = $this->request->getVar('app_user_id');
+					$data['user_routes'] = $this->request->getVar('userRoutes');
+					$data['location_id'] = $loc_p_id;
+					$data['distance'] = $this->request->getVar('distance');
+					$data['pace'] = $this->request->getVar('pace');
+					$data['time'] = $this->request->getVar('loc_record');
+					$data['created_at'] = $this->request->getVar('created_at');
+					$modelUserRecord->insert($data);
+	
+					$loc_records = $modelUserRecord->where(['app_user_id' => $this->request->getVar('app_user_id')])->findAll();
+	
+					foreach( $loc_records as $key => $loc_record ) {
+						$loc_name = 'No name';
+						if( $modelLocations->find( $loc_record['location_id'] ) != null )
+							$loc_name = $modelLocations->find( $loc_record['location_id'] )['loc_title'];
+						$loc_records[$key]['loc_name'] = $loc_name;
+					}
+					return $this->response->setStatusCode(202)->setJSON(['loc_records' => ($loc_records)]);
 				}
-				return $this->response->setStatusCode(202)->setJSON(['loc_records' => ($loc_records)]);
 			}
 		}
 		else return $this->response->setJSON(["error"=>"Token is not valid"], 400);
