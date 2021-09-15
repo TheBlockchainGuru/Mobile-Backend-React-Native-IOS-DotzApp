@@ -40,7 +40,7 @@ class Locs_api extends ResourceController
             $modelProfilesPosts = new ProfilesPostsModel;
             $modelProfilesPostsComments = new ProfilesPostsComments;
 
-			$locs = $this->model->findAll();
+			$locs = $this->model->where('approved', 1)->findAll();
 			$ac_loc_rels = $modelAc_loc_rels->findAll();
 			$activities = $modelActivities->findAll();
 			$AppUsers = $modelAppUser->findAll();
@@ -220,6 +220,50 @@ class Locs_api extends ResourceController
 			}
 		}
 		else return $this->response->setStatusCode(400)->setJSON(["error"=>"Token is not valid"]);
+	}
+
+	public function add() {
+		if ($this->is_token_valid())
+        {
+			$modelAc_loc_rels = new ActivitiesLocsRelsModel;
+
+			helper(['form']);
+
+			$rules = [
+				'loc_p_cors_start' => 'string',
+				'loc_p_cors_finish' => 'string',
+				'loc_p_cors_all' => 'string'
+			];
+
+			if(!$this->validate($rules)){
+				return $this->fail($this->validator->getErrors());
+			}else{
+				$oauth = new Oauth();
+				$request = Request::createFromGlobals();
+				$app_user = $oauth->server->getAccessTokenData($request);
+				$modelActivities = new ActivitiesModel;
+				if ( $modelActivities->find($this->request->getVar('activity_id')) ) {
+					$activity_id = intval( $this->request->getVar('activity_id') );
+				} else {
+					return $this->response->setJSON("Error. activity_id not found.", 400);
+				}
+				$data = [
+					'loc_title' => $this->request->getVar('loc_p_title'),
+					'loc_cors_start' => $this->request->getVar('loc_p_cors_start'),
+					'loc_cors_finish' => $this->request->getVar('loc_p_cors_finish'),
+					'loc_cors_all' => $this->request->getVar('loc_p_cors_all'),
+					'loc_activity_id' => $activity_id,
+					'loc_city' => $this->request->getVar('loc_p_city'),
+				];
+
+				$loc_p_id = $this->model->insert($data);
+				$data['loc_p_id'] = $loc_p_id;
+
+				$modelAc_loc_rels->insert([ 'activity_id' => $activity_id, 'loc_id' => $loc_p_id ]);
+				return $this->respondCreated($data);
+			}
+		}
+		else return $this->response->setJSON(["error"=>"Token is not valid"], 400);
 	}
 
     public function is_token_valid()

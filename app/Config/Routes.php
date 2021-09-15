@@ -52,7 +52,7 @@ $routes->resource('/api/activities', ['placeholder' => '(:num)','controller' =>'
 $routes->get('api/activities/','Activities_api::index');
 
 $routes->resource('/api/locs_p', ['placeholder' => '(:num)','controller' =>'Locs_pending_api']);
-$routes->post('api/locs_p/add','Locs_pending_api::add');
+$routes->post('api/locs_p/add','Locs_api::add');
 
 $routes->resource('/api/locations', ['placeholder' => '(:num)','controller' =>'Locs_api']);
 $routes->post('api/locations/','Locs_api::index');

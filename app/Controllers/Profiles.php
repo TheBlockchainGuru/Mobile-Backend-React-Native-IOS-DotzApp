@@ -119,7 +119,6 @@ class Profiles extends BaseController
 		$oauth = new Oauth();
 		$request = new Request();
 		$modelAppUserRels = new AppUserRelsModel;
-		$modelLocations = new LocationsModel;
 		$modelProfiles = new ProfilesModel;
 
 		$app_user = $oauth->server->getAccessTokenData($request);
@@ -128,12 +127,6 @@ class Profiles extends BaseController
 		
 		$favourite_locs = json_decode($this->request->getVar('favourite_locs'));
 		if (!$favourite_locs) return $this->response->setStatusCode(400)->setJSON(["error"=>"favourite_locs not provided."]);
-		// return $this->response->setStatusCode(202)->setJSON(['success'=>'1']);
-		// $locs = $modelLocations->findAll();
-		// foreach ($favourite_locs as $favourite_loc) {
-		// 	if (!in_array($favourite_loc, array_column($locs, 'loc_id'))) 
-		// 		return $this->response->setStatusCode(400)->setJSON(["error"=>"Such location not found.", 'favourite_loc'=>$favourite_loc, 'locs'=>$locs]);
-		// }
 
 		$modelProfiles->update($appUserRel[0]['profile_id'], ['profile_favourite_locs'=>json_encode($favourite_locs)]);
 		return $this->response->setStatusCode(202)->setJSON(['success'=>'Profile favourite locations updated.']);
@@ -280,7 +273,7 @@ class Profiles extends BaseController
 		if (isset($update_data['favourite_locs'])) {
 			$favourite_locs = json_decode( $update_data['favourite_locs'] );
 
-			$locs = $modelLocations->findAll();
+			$locs = $modelLocations->where('approved', 1)->findAll();
 			foreach ($favourite_locs as $favourite_loc) {
 				if (!in_array($favourite_loc, array_column($locs, 'loc_id'))) 
 					return $this->response->setStatusCode(400)->setJSON(["error"=>"Such location not found.", 'favourite_loc'=>$favourite_loc, 'locs'=>$locs]);
