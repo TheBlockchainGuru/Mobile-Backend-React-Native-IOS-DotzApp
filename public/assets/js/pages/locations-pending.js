@@ -16,8 +16,8 @@ function initMap(event = null, elem = null) {
     let mapContainer = event != null ? event.data : elem
     let cors, center
     pageData.locs.forEach(e=>{
-        if (e.loc_p_id === mapContainer.dataset.loc_p_id) {
-            cors = JSON.parse(e.loc_p_cors_all)
+        if (e.loc_id === mapContainer.dataset.loc_id) {
+            cors = JSON.parse(e.loc_cors_all)
             center = cors[Math.floor(cors.length / 2)]
         }
     })

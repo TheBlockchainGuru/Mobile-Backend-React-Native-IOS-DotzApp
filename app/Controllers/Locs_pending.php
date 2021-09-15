@@ -63,12 +63,11 @@ class Locs_pending extends BaseController
                 echo $this->validator->listErrors();
 			} else {
                 $model = new LocationsModel;
-                
-				$model->delete($this->request->getVar('loc_id'));
-				
 				$modelAc_loc_rels = new ActivitiesLocsRelsModel;
 
 				$modelAc_loc_rels->where(['loc_id' => $this->request->getVar('loc_id')])->delete();
+
+				$model->delete($this->request->getVar('loc_id'));
 
 				$session = session();
                 $session->setFlashdata('success', 'Successful Deletion');
