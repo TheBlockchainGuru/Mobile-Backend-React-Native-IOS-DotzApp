@@ -197,14 +197,13 @@ class Chat implements MessageComponentInterface {
         if ( isset($msgObj->msg) ) {
             $msg_type = 'msg';
             $ChatHistoryModel = new ChatHistoryModel();
-            $msgTimeSentServer = Time::createFromTimestamp($msgTimeSent / 1000);
             $data = [
                 'author_id' => $from->user['user_id'],
                 'author_name' => $from->user['nice_name'],
                 'author_type' => $from->user['user_type'],
                 'message' => $msgObj->msg,
-                'msg_time_sent' => $msgTimeSentServer,
-                'msg_timestamp_sent' => $msgTimeSentServer->setTimezone('UTC')->getTimestamp(),
+                'msg_time_sent' => $msgTimeSent,
+                'msg_timestamp_sent' => $msgTimeSent,
                 'msg_reciever_id' => $msgObj->msg_reciever_id
             ];
             if ( isset($msgObj->friendship_request) ) $data['request_status'] = $msgObj->friendship_request;
@@ -388,15 +387,14 @@ class Chat implements MessageComponentInterface {
             write_file('./'. $path, utf8_decode($msgObj->blob));
             
             $ChatHistoryModel = new ChatHistoryModel();
-            $msgTimeSentServer = Time::createFromTimestamp($msgTimeSent / 1000);
     
             $data = [
                 'author_id' => $from->user['user_id'],
                 'author_name' => $from->user['nice_name'],
                 'author_type' => $from->user['user_type'],
                 'message' =>  $path,
-                'msg_time_sent' => $msgTimeSentServer,
-                'msg_timestamp_sent' => $msgTimeSentServer->setTimezone('UTC')->getTimestamp(),
+                'msg_time_sent' => $msgTimeSent,
+                'msg_timestamp_sent' => $msgTimeSent,
                 'msg_reciever_id' => $msgObj->msg_reciever_id
             ];
             if ( $msgObj->msg_type ) $data['msg_type'] = $msgObj->msg_type;
