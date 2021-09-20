@@ -344,11 +344,12 @@ class Clubs extends BaseController
 		$profile_id = $postData['profile_id'];
 		$club_id = $postData['club_id'];
 		$content = $postData['content'];
+		$sent_at = $postData['sent_at'];
 
 		$app_user_id = $modelAppUserRels->where(['profile_id' => $profile_id])->first()['app_user_id'];
 		
-		$modelClubMessages->insert(['app_user_id' => $app_user_id, 'club_id' => $club_id, 'content' => $content]);
-		// echo 'here2???'; exit;
+		$modelClubMessages->insert(['app_user_id' => $app_user_id, 'club_id' => $club_id, 'content' => $content, 'sent_at' => $sent_at]);
+
 		$messageList = $modelClubMessages->where(['club_id' => $club_id])->findAll();
 
 		foreach( $messageList as $key => $message ) {
