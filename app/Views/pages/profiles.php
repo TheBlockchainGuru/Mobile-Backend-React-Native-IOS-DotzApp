@@ -49,7 +49,9 @@
                                                 </button>
                                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                     <?php foreach ($friends as $friend) : ?>
-                                                        <a class="dropdown-item" href="#"><?=$friend['app_user_name']?></a>
+                                                        <?php if( isset($friend['app_user_name']) ) : ?>
+                                                            <a class="dropdown-item" href="#"><?=$friend['app_user_name']?></a>
+                                                        <?php endif; ?>
                                                     <?php endforeach; ?>
                                                 </div>
                                             </div>
