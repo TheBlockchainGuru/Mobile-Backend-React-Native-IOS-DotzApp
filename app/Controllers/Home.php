@@ -31,6 +31,18 @@ class Home extends BaseController
 				$user = $model->where('email', $this->request->getVar('email'))
 											->first();
 
+				if( !$user ) {
+					$message = `User doesn't exist`;
+					
+					$data['message'] = $message;
+					$data['page'] = 'login';
+			
+					echo view('templates/header', $data);
+					echo view('pages/login');
+					echo view('templates/footer');
+					return;
+				}
+
 				$this->setUserSession($user);
 				//$session->setFlashdata('success', 'Successful Registration');
 				return redirect()->to('locs_pending');
