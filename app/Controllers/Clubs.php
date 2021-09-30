@@ -186,7 +186,24 @@ class Clubs extends BaseController
 
 		$club_id = $postData['club_id'];
 
-		$club_users = $modelClubUsers->where(['club_id' => $club_id])->findAll();
+		$club_users_temp = $modelClubUsers->where(['club_id' => $club_id])->findAll();
+
+        $club_users = [];
+
+        foreach( $club_users_temp as $club_user ) {
+            $app_user = $modelAppUser->where(['app_user_id' => $club_user['app_user_id']])->first();
+            if( !$app_user_id )
+                continue;
+			$app_user_rels = $modelAppUserRels->where(['app_user_id' => $club_user['app_user_id']])->first();
+            if( !$app_user_rels )
+                continue;
+            $profile_id = $modelAppUserRels->where(['app_user_id' => $club_user['app_user_id']])->first()['profile_id'];
+			$profile = $modelProfiles->where(['profile_id' => $profile_id])->first();
+            if( !$profile )
+                continue;
+
+            array_push($club_users, $club_user);
+        }
 
 		foreach( $club_users as $key => $club_user ) {
 			$user_name = $modelAppUser->where(['app_user_id' => $club_user['app_user_id']])->first()['app_user_name'];
@@ -196,7 +213,7 @@ class Clubs extends BaseController
 			$club_users[$key]['user_name'] = $user_name;
 			$club_users[$key]['user_ava'] = $user_ava;
 		}
-        
+
 		$club_messages = $modelClubMessages->where(['club_id' => $club_id])->findAll();
 
 		foreach( $club_messages as $key => $message ) {
