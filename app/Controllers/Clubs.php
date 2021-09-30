@@ -192,14 +192,14 @@ class Clubs extends BaseController
 
         foreach( $club_users_temp as $club_user ) {
             $app_user = $modelAppUser->where(['app_user_id' => $club_user['app_user_id']])->first();
-            if( !$app_user_id )
+            if( !isset($app_user_id) )
                 continue;
 			$app_user_rels = $modelAppUserRels->where(['app_user_id' => $club_user['app_user_id']])->first();
-            if( !$app_user_rels )
+            if( !isset($app_user_rels) )
                 continue;
             $profile_id = $modelAppUserRels->where(['app_user_id' => $club_user['app_user_id']])->first()['profile_id'];
 			$profile = $modelProfiles->where(['profile_id' => $profile_id])->first();
-            if( !$profile )
+            if( !isset($profile) )
                 continue;
 
             array_push($club_users, $club_user);
