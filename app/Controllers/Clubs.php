@@ -196,7 +196,7 @@ class Clubs extends BaseController
 			$club_users[$key]['user_name'] = $user_name;
 			$club_users[$key]['user_ava'] = $user_ava;
 		}
-
+        echo 'success'; exit;
 		$club_messages = $modelClubMessages->where(['club_id' => $club_id])->findAll();
 
 		foreach( $club_messages as $key => $message ) {
