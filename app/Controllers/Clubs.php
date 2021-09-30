@@ -187,7 +187,7 @@ class Clubs extends BaseController
 		$club_id = $postData['club_id'];
 
 		$club_users = $modelClubUsers->where(['club_id' => $club_id])->findAll();
-
+        echo 'success'; exit;
 		foreach( $club_users as $key => $club_user ) {
 			$user_name = $modelAppUser->where(['app_user_id' => $club_user['app_user_id']])->first()['app_user_name'];
 			$profile_id = $modelAppUserRels->where(['app_user_id' => $club_user['app_user_id']])->first()['profile_id'];
